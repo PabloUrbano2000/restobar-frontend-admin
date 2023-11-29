@@ -1,10 +1,12 @@
+import { enviroments } from "../env";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyAoL92gUASDXPrhpKNmHmPzlD5yIplmFLQ",
-  authDomain: "restaurant-app-6a09d.firebaseapp.com",
-  projectId: "restaurant-app-6a09d",
-  storageBucket: "restaurant-app-6a09d.appspot.com",
-  messagingSenderId: "472854944451",
-  appId: "1:472854944451:web:c346ef8f548cc55fe6a076",
+  apiKey: enviroments.FIREBASE_API_KEY,
+  authDomain: enviroments.FIREBASE_AUTH_DOMAIN,
+  projectId: enviroments.FIREBASE_PROJECT_ID,
+  storageBucket: enviroments.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: enviroments.FIREBASE_MESSAGING_SENDER_ID,
+  appId: enviroments.FIREBASE_APP_ID,
 };
 
 export default firebaseConfig;

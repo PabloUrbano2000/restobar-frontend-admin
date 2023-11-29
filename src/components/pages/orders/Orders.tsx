@@ -11,7 +11,7 @@ const Orders = () => {
     try {
       const obtenerOrdenes = () => {
         firebase?.getDocumentsQueryRealtime(
-          "ordenes",
+          "orders",
           guardarOrdenes,
           "completado",
           false
