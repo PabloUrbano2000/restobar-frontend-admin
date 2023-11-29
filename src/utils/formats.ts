@@ -3,52 +3,52 @@
 // import { months } from "./constants";
 // import { docPatterns } from "./regex";
 
-// type FormatDate = {
-//   date: string | Date | undefined | null;
-//   order?: number; // 0 dia-mes-año | 1 año-mes-dia
-//   separator?: string;
-// };
+type FormatDate = {
+  date: string | Date | undefined | null;
+  order?: number; // 0 dia-mes-año | 1 año-mes-dia
+  separator?: string;
+};
 
-// export const setFormatDate = ({
-//   order = 0,
-//   date,
-//   separator = "-",
-// }: FormatDate) => {
-//   if (date) {
-//     let year: number | string = "";
-//     let month: number | string = "";
-//     let day: number | string = "";
-//     if (typeof date === "string") {
-//       year = date.substring(0, 4);
-//       month = date.substring(5, 7);
-//       day = date.substring(8, 10);
-//     }
-//     if (typeof date === "object") {
-//       const convertDate = new Date(date);
-//       year = convertDate ? convertDate.getFullYear() : "";
-//       month = convertDate ? convertDate.getMonth() + 1 : "";
-//       if (Number(month) < 10) {
-//         month = `0${month}`;
-//       }
-//       day = convertDate ? convertDate.getDate() : "";
-//       if (Number(day) < 10) {
-//         day = `0${day}`;
-//       }
-//     }
+export const setFormatDate = ({
+  order = 0,
+  date,
+  separator = "-",
+}: FormatDate) => {
+  if (date) {
+    let year: number | string = "";
+    let month: number | string = "";
+    let day: number | string = "";
+    if (typeof date === "string") {
+      year = date.substring(0, 4);
+      month = date.substring(5, 7);
+      day = date.substring(8, 10);
+    }
+    if (typeof date === "object") {
+      const convertDate = new Date(date);
+      year = convertDate ? convertDate.getFullYear() : "";
+      month = convertDate ? convertDate.getMonth() + 1 : "";
+      if (Number(month) < 10) {
+        month = `0${month}`;
+      }
+      day = convertDate ? convertDate.getDate() : "";
+      if (Number(day) < 10) {
+        day = `0${day}`;
+      }
+    }
 
-//     if (order === 0) {
-//       return year && month && day
-//         ? `${day}${separator}${month}${separator}${year}`
-//         : "";
-//     }
-//     if (order === 1) {
-//       return year && month && day
-//         ? `${year}${separator}${month}${separator}${day}`
-//         : "";
-//     }
-//   }
-//   return "";
-// };
+    if (order === 0) {
+      return year && month && day
+        ? `${day}${separator}${month}${separator}${year}`
+        : "";
+    }
+    if (order === 1) {
+      return year && month && day
+        ? `${year}${separator}${month}${separator}${day}`
+        : "";
+    }
+  }
+  return "";
+};
 
 // type FormatCharacter = {
 //   character: string;

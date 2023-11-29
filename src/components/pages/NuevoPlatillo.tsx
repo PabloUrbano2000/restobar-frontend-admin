@@ -73,7 +73,7 @@ const NuevoPlatillo = () => {
         // en caso recibo un id quiere decir que se insertó
         if (resultBody.id) {
           console.log("insercción de cuerpo correcta:", resultBody.id);
-          navigate("/menu");
+          navigate("/menu", { replace: true });
         }
       } catch (error) {
         console.log(error);

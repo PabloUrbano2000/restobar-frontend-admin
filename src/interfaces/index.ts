@@ -10,16 +10,19 @@ export interface PaginateResponse<T> {
   current_page: number;
   total_pages: number;
   docs: T[];
+  errors: string[];
 }
 
 export interface DocumentResponse<T> {
   status_code: number;
+  error_code?: string;
   message?: string;
   data?: {
     user?: T;
     access_token?: string;
     refresh_token?: string;
   };
+  errors: string[];
 }
 
 export interface ErrorResponse {

@@ -1,9 +1,18 @@
 import { useAuthContext } from "../../context/AuthContext";
+import { enviroments } from "../../env";
+import { getCookie } from "../../utils/cookies";
+import { COOKIE_TOKEN } from "../../utils/constants";
 
 const Header = () => {
   const { user, cleanAuth } = useAuthContext();
 
   const logout = () => {
+    fetch(`${enviroments.API_URL}/admin/auth/logout`, {
+      method: "POST",
+      headers: {
+        "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      },
+    });
     cleanAuth();
   };
 

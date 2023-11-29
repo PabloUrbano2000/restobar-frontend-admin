@@ -124,7 +124,6 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   React.useEffect(() => {
     const init = async () => {
-      console.log("llego aqui");
       const result = await initializeAuth();
       setValue(result);
     };
