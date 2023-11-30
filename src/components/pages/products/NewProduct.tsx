@@ -1,4 +1,7 @@
-import { useState, useContext } from "react";
+import {
+  //  useState,
+  useContext,
+} from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -9,9 +12,9 @@ import { useNavigate } from "react-router";
 
 const NewProduct = () => {
   // state para las imagenes
-  const [subiendo, guardarSubiendo] = useState(false);
-  const [progreso, guardarProgreso] = useState(0);
-  const [urlImagen, guardarUrlImagen] = useState("");
+  // const [subiendo, guardarSubiendo] = useState(false);
+  // const [progreso, guardarProgreso] = useState(0);
+  // const [urlImagen, guardarUrlImagen] = useState("");
 
   // Context con las operaciones de firebase
   const { firebase } = useContext(FirebaseContext);
@@ -63,7 +66,7 @@ const NewProduct = () => {
         newData.existencia = true;
 
         // asignando la url de la imagen subida
-        newData.imagen = urlImagen;
+        // newData.imagen = urlImagen;
 
         // le mando la colección donde debe crearse y el cuerpo como objeto
         const resultBody = await firebase?.insertDocument("productos", {
@@ -82,33 +85,33 @@ const NewProduct = () => {
   });
 
   // Todo sobre las imagenes
-  const handleUploadStart = () => {
-    guardarProgreso(0);
-    guardarSubiendo(true);
-  };
+  // const handleUploadStart = () => {
+  //   guardarProgreso(0);
+  //   guardarSubiendo(true);
+  // };
 
-  const handleUploadError = (error: any) => {
-    guardarSubiendo(false);
-    console.log(error);
-  };
+  // const handleUploadError = (error: any) => {
+  //   guardarSubiendo(false);
+  //   console.log(error);
+  // };
 
-  const handleUploadSuccess = async (nom: any) => {
-    guardarProgreso(100);
-    guardarSubiendo(false);
+  // const handleUploadSuccess = async (nom: any) => {
+  //   guardarProgreso(100);
+  //   guardarSubiendo(false);
 
-    // Almacenar la URL de destino
-    const url = await firebase?.storage
-      .ref("productos")
-      .child(nom)
-      .getDownloadURL();
-    console.log(url);
-    guardarUrlImagen(url);
-  };
+  //   // Almacenar la URL de destino
+  //   const url = await firebase?.storage
+  //     .ref("productos")
+  //     .child(nom)
+  //     .getDownloadURL();
+  //   console.log(url);
+  //   guardarUrlImagen(url);
+  // };
 
-  const handleProgress = (prog: any) => {
-    guardarProgreso(prog);
-    console.log(prog);
-  };
+  // const handleProgress = (prog: any) => {
+  //   guardarProgreso(prog);
+  //   console.log(prog);
+  // };
 
   return (
     <>
@@ -235,7 +238,7 @@ const NewProduct = () => {
               /> */}
             </div>
 
-            {subiendo && (
+            {/* {subiendo && (
               <div className="h-12 relative w-full border">
                 <div
                   className="bg-green-500 absolute left-0 top-0 text-white px-2 text-sm h-12 flex items-center"
@@ -244,13 +247,13 @@ const NewProduct = () => {
                   {progreso} %
                 </div>
               </div>
-            )}
+            )} */}
 
-            {urlImagen && (
+            {/* {urlImagen && (
               <p className="bg-green-500 text-white p-3 text-center my-5">
                 La imagen se subió correctamente
               </p>
-            )}
+            )} */}
 
             <div className="mb-4">
               <label
