@@ -4,10 +4,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { useNavigate } from "react-router";
-import { enviroments } from "../../../env";
-import { DocumentResponse } from "../../../interfaces";
-import { SystemUser } from "../../../types";
 import { Link } from "react-router-dom";
+import { recoveryPassword } from "../../../services";
 
 const RecoveryPasswordPage = () => {
   const navigate = useNavigate();
@@ -23,27 +21,15 @@ const RecoveryPasswordPage = () => {
         .email("Formato de correo inválido")
         .required("El correo es obligatorio"),
     }),
-    onSubmit: async (datos) => {
+    onSubmit: async ({ email }) => {
       try {
         setOnProccess(true);
-        const result = await fetch(
-          `${enviroments.API_URL}/admin/auth/password/recovery`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: datos.email,
-            }),
-          }
-        );
 
-        const data: DocumentResponse<SystemUser> = await result.json();
+        const data = await recoveryPassword({
+          email,
+        });
 
         if (data.status_code == 200) {
-          console.log("resultado", data);
-
           toast.success(data.message || "", {
             position: "top-right",
             duration: 3000,

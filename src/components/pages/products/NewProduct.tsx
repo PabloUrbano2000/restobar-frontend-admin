@@ -69,15 +69,15 @@ const NewProduct = () => {
         // newData.imagen = urlImagen;
 
         // le mando la colección donde debe crearse y el cuerpo como objeto
-        const resultBody = await firebase?.insertDocument("productos", {
-          ...datos,
-        });
+        // const resultBody = await firebase?.insertDocument("productos", {
+        //   ...datos,
+        // });
 
-        // en caso recibo un id quiere decir que se insertó
-        if (resultBody.id) {
-          console.log("insercción de cuerpo correcta:", resultBody.id);
-          navigate("/menu", { replace: true });
-        }
+        // // en caso recibo un id quiere decir que se insertó
+        // if (resultBody.id) {
+        //   console.log("insercción de cuerpo correcta:", resultBody.id);
+        //   navigate("/menu", { replace: true });
+        // }
       } catch (error) {
         console.log(error);
       }

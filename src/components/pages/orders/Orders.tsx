@@ -10,7 +10,7 @@ const Orders = () => {
   useEffect(() => {
     try {
       const obtenerOrdenes = () => {
-        firebase?.getDocumentsQueryRealtime(
+        firebase?.getDocumentsByFilterInRealtime(
           "orders",
           guardarOrdenes,
           "completado",

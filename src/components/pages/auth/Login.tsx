@@ -4,13 +4,13 @@ import toast from "react-hot-toast";
 import * as Yup from "yup";
 
 import { useNavigate } from "react-router";
-import { enviroments } from "../../../env";
 import { DocumentResponse } from "../../../interfaces";
 import { SystemUser } from "../../../types";
 import { useAuthContext } from "../../../context/AuthContext";
 import { setCookie } from "../../../utils/cookies";
 import { COOKIE_REFRESH_TOKEN, COOKIE_TOKEN } from "../../../utils/constants";
 import { Link } from "react-router-dom";
+import { loginSystemUser, recoveryAccount } from "../../../services";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -31,32 +31,17 @@ const LoginPage = () => {
         .required("El correo es obligatorio"),
       password: Yup.string().required("La contraseña es obligatoria"),
     }),
-    onSubmit: async (datos) => {
+    onSubmit: async (values) => {
       try {
         setOnProccess(true);
         setShowVerify(false);
-        setEmail(datos.email);
-        const result = await fetch(`${enviroments.API_URL}/admin/auth/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: datos.email,
-            password: datos.password,
-          }),
+        setEmail(values.email);
+        const data = await loginSystemUser({
+          email: values.email,
+          password: values.password,
         });
 
-        const data: DocumentResponse<SystemUser> = await result.json();
-
         if (data.status_code == 200) {
-          console.log(
-            "resultado",
-            data.data?.user,
-            data.data?.access_token,
-            data.data?.refresh_token
-          );
-
           toast.success("Inicio de sesión éxitoso", {
             position: "top-right",
             duration: 3000,
@@ -96,20 +81,10 @@ const LoginPage = () => {
     try {
       setShowVerify(false);
       setOnProccess(true);
-      const result = await fetch(
-        `${enviroments.API_URL}/admin/auth/account/recovery`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: email,
-          }),
-        }
-      );
 
-      const data: DocumentResponse<SystemUser> = await result.json();
+      const data: DocumentResponse<SystemUser> = await recoveryAccount({
+        email,
+      });
 
       if (data.status_code == 200) {
         console.log("resultado", data);

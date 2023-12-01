@@ -4,10 +4,11 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { useNavigate } from "react-router";
-import { enviroments } from "../../../env";
 import { DocumentResponse } from "../../../interfaces";
 import { SystemUser } from "../../../types";
 import { Link, useSearchParams } from "react-router-dom";
+import Spinner from "../../ui/Spinner";
+import { changePassword, verifyPasswordToken } from "../../../services";
 
 const RestorePasswordPage = () => {
   const navigate = useNavigate();
@@ -21,16 +22,7 @@ const RestorePasswordPage = () => {
       const token = searchParams.get("token");
 
       if (token) {
-        const response = await fetch(
-          `${enviroments.API_URL}/admin/auth/password/verify`,
-          {
-            method: "POST",
-            headers: {
-              "x-access-token": token,
-            },
-          }
-        );
-        const data: DocumentResponse<null> = await response.json();
+        const data = await verifyPasswordToken(token);
         if (data.status_code === 200) {
           setIsValidToken(true);
           setLoading(false);
@@ -60,32 +52,19 @@ const RestorePasswordPage = () => {
         "Las contraseñas no coinciden"
       ),
     }),
-    onSubmit: async (datos) => {
+    onSubmit: async ({ password, confirm_password }) => {
       try {
         setOnProccess(true);
 
         const token = searchParams.get("token");
 
-        const result = await fetch(
-          `${enviroments.API_URL}/admin/auth/password/change`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "x-access-token": token || "",
-            },
-            body: JSON.stringify({
-              new_password: datos.password,
-              confirm_password: datos.confirm_password,
-            }),
-          }
-        );
-
-        const data: DocumentResponse<SystemUser> = await result.json();
+        const data: DocumentResponse<SystemUser> = await changePassword({
+          new_password: password,
+          confirm_password,
+          token: token || "",
+        });
 
         if (data.status_code == 200) {
-          console.log("resultado", data);
-
           toast.success(data.message || "", {
             position: "top-right",
             duration: 3000,
@@ -118,7 +97,7 @@ const RestorePasswordPage = () => {
           minHeight: "200px",
         }}
       >
-        {loading ? <div>Spinner</div> : null}
+        {loading ? <Spinner /> : null}
         {!loading && !isValidToken ? (
           <div>
             <h2 className="text-3xl mb-4 text-center font-semibold uppercase my-2">

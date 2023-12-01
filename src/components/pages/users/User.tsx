@@ -1,31 +1,27 @@
 import { useNavigate } from "react-router";
 import { SystemUser } from "../../../types";
 import { setFormatDate } from "../../../utils/formats";
+
 interface UserItemProps {
   user: SystemUser;
+  onConfirm: (user: SystemUser) => void;
 }
 
-const UserItem = ({ user }: UserItemProps) => {
+const UserItem = ({ user, onConfirm }: UserItemProps) => {
   const navigate = useNavigate();
 
-  const handleUser = () => {
+  const handleEditUser = () => {
     navigate(`/usuarios/editar/${user.id}`, { replace: true });
   };
 
   return (
-    <div className="w-full lg:w-2/4 xl:w-1/3 px-4 mb-4">
-      <div className="p-3 py-5 shadow-md bg-white w-full flex">
+    <div className="ww-full lg:w-2/4 xl:w-1/3 px-4 mb-4">
+      <div className="p-3 py-5 shadow-md bg-white w-full flex relative">
         <div className="sm:w-1/3 rounded-full flex h-auto flex-col">
-          <input id={user.id} onClick={handleUser} className="hidden" />
+          <input id={user.id} onClick={handleEditUser} className="hidden" />
           <label
             htmlFor={user.id}
-            className="bg-slate-500 text-center w-24 h-24 flex justify-center items-center text-white font-semibold text-xl cursor-pointer"
-            style={{
-              padding: "1.5rem",
-              borderRadius: "50%",
-              margin: "auto",
-              textAlign: "center",
-            }}
+            className="bg-slate-500 text-center w-24 h-24 flex justify-center items-center text-white font-semibold text-xl cursor-pointer p-6 rounded-full m-auto"
           >
             {user.first_name?.toString()[0].toUpperCase()}
             {user.last_name?.toString()[0].toUpperCase()}
@@ -40,7 +36,7 @@ const UserItem = ({ user }: UserItemProps) => {
             {user.email}
           </p>
 
-          <p className="text-gray-700 text-sm">
+          <p className="text-gray-700 text-sm truncate">
             Nombre: {user.first_name} {user.last_name}
           </p>
 
@@ -71,6 +67,17 @@ const UserItem = ({ user }: UserItemProps) => {
               <>&nbsp;</>
             )}
           </p>
+          <div className="w-auto text-gray-900 text-xs">
+            Estado:
+            <button
+              className={`ml-2 p-1 rounded-md text-white text-xs font-semibold ${
+                user.status === 1 ? "bg-green-500" : "bg-red-500"
+              }`}
+              onClick={() => onConfirm(user)}
+            >
+              {user.status === 1 ? "Habilitado" : "Inhabilitado"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

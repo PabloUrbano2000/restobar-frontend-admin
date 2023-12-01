@@ -11,7 +11,7 @@ const Menu = () => {
   useEffect(() => {
     const obtenerPlatillos = () => {
       // llamando a los platillos en tiempo real
-      firebase?.getDocumentsRealtime("productos", guardarPlatillos);
+      firebase?.getAllDocumentsInRealtime("productos", guardarPlatillos);
 
       // llamando a los platillos sin tiempo real
       // const resultado2 = await firebase.getDocuments("productos");

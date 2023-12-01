@@ -1,9 +1,9 @@
 import React from "react";
 
 import { useNavigate } from "react-router";
-import { enviroments } from "../../../env";
-import { DocumentResponse } from "../../../interfaces";
 import { Link, useSearchParams } from "react-router-dom";
+import Spinner from "../../ui/Spinner";
+import { verifyAccountToken } from "../../../services";
 
 const VerifyAccountPage = () => {
   const navigate = useNavigate();
@@ -16,16 +16,7 @@ const VerifyAccountPage = () => {
       const token = searchParams.get("token");
 
       if (token) {
-        const response = await fetch(
-          `${enviroments.API_URL}/admin/auth/account/verify`,
-          {
-            method: "POST",
-            headers: {
-              "x-access-token": token,
-            },
-          }
-        );
-        const data: DocumentResponse<null> = await response.json();
+        const data = await verifyAccountToken(token);
         if (data.status_code === 200) {
           setIsValidToken(true);
           setLoading(false);
@@ -48,7 +39,7 @@ const VerifyAccountPage = () => {
           minHeight: "200px",
         }}
       >
-        {loading ? <div>Spinner</div> : null}
+        {loading ? <Spinner /> : null}
         {!loading && !isValidToken ? (
           <div>
             <h2 className="text-3xl mb-4 text-center font-semibold uppercase my-2">
