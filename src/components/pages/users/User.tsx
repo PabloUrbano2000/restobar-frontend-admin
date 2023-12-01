@@ -15,7 +15,7 @@ const UserItem = ({ user, onConfirm }: UserItemProps) => {
   };
 
   return (
-    <div className="ww-full lg:w-2/4 xl:w-1/3 px-4 mb-4">
+    <div className="w-full lg:w-2/4 xl:w-1/3 px-4 mb-4">
       <div className="p-3 py-5 shadow-md bg-white w-full flex relative">
         <div className="sm:w-1/3 rounded-full flex h-auto flex-col">
           <input id={user.id} onClick={handleEditUser} className="hidden" />

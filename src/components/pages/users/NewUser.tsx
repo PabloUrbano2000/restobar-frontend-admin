@@ -5,10 +5,9 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router";
 import { namesRegex } from "../../../utils/regex";
 import { Role } from "../../../types";
-import { PaginateResponse } from "../../../interfaces";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { createUser, getRoles } from "../../../services";
+import { createSystemUser, getRoles } from "../../../services";
 
 const NewUserPage = () => {
   // Hook para redireccionar
@@ -19,7 +18,7 @@ const NewUserPage = () => {
   useEffect(() => {
     const loadingCombo = async () => {
       try {
-        const data: PaginateResponse<Role> = await getRoles();
+        const data = await getRoles();
         if (data.status_code == 200) {
           setRoles(data.docs);
         } else {
@@ -60,13 +59,13 @@ const NewUserPage = () => {
       email: Yup.string()
         .required("El correo electrónico es obligatorio")
         .email("Formato de correo electrónico inválido"),
-      role: Yup.string().required("El Rol del usuario es obligatorio"),
+      role: Yup.string().required("El rol del usuario es obligatorio"),
     }),
     onSubmit: async (values) => {
       try {
         setOnProccess(true);
 
-        const data = await createUser({
+        const data = await createSystemUser({
           email: values.email.toLowerCase(),
           first_name: values.first_name,
           last_name: values.last_name,

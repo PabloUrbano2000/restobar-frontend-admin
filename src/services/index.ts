@@ -140,7 +140,21 @@ export const getSystemUsers = async (): Promise<
   return await result.json();
 };
 
-export const createUser = async (
+export const getSystemUserById = async (
+  id: string
+): Promise<DocumentResponse<SystemUser>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/system-user/get`, {
+    method: "POST",
+    headers: {
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({ id }),
+  });
+  return await result.json();
+};
+
+export const createSystemUser = async (
   data: SystemUser & {
     role: string;
   }
@@ -155,6 +169,30 @@ export const createUser = async (
       },
       body: JSON.stringify({
         email: data?.email?.toLowerCase(),
+        first_name: data?.first_name,
+        last_name: data?.last_name,
+        role: data.role,
+      }),
+    }
+  );
+  return await result.json();
+};
+
+export const updateSystemUserById = async (
+  data: SystemUser & {
+    role: string;
+  }
+): Promise<DocumentResponse<SystemUser>> => {
+  const result = await fetch(
+    `${enviroments.API_URL}/admin/system-user/update`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      },
+      body: JSON.stringify({
+        id: data.id,
         first_name: data?.first_name,
         last_name: data?.last_name,
         role: data.role,
