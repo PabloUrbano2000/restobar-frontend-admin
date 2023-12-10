@@ -5,12 +5,12 @@ import { generateLastPath } from "../../../utils/session";
 import { Link } from "react-router-dom";
 import Spinner from "../../ui/Spinner";
 import AlertModal from "../../ui/AlertModal";
-import toast from "react-hot-toast";
 import {
   disableSystemUser,
   enableSystemUser,
   getSystemUsers,
 } from "../../../services";
+import { showFailToast, showSuccessToast } from "../../../utils/toast";
 
 const UsersPage = () => {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -21,8 +21,8 @@ const UsersPage = () => {
 
   const [error, setError] = React.useState<string>("");
 
-  const [modal, setModal] = React.useState(false);
-  const [onProcess, setOnProccess] = React.useState(false);
+  const [modalState, setModalState] = React.useState(false);
+  const [inProcess, setInProcess] = React.useState(false);
 
   React.useEffect(() => {
     generateLastPath();
@@ -45,22 +45,19 @@ const UsersPage = () => {
 
   const handleConfirmState = (user: SystemUser) => {
     setUserSelected(user);
-    setModal(true);
+    setModalState(true);
   };
 
   const handleChangeState = async () => {
     try {
-      setOnProccess(true);
+      setInProcess(true);
       if (userSelected) {
         const data =
           userSelected.status == 1
             ? await disableSystemUser(userSelected.id || "")
             : await enableSystemUser(userSelected.id || "");
         if (data.status_code === 200) {
-          toast.success(data?.message || "", {
-            position: "top-right",
-            duration: 3000,
-          });
+          showSuccessToast(data?.message || "");
           setUsers(
             users.map((us) =>
               us.id === data.data?.user?.id
@@ -69,20 +66,14 @@ const UsersPage = () => {
             )
           );
         } else {
-          toast.error(data?.errors[0] || "", {
-            position: "top-right",
-            duration: 3000,
-          });
+          showFailToast(data?.errors[0] || "");
         }
       }
     } catch (error) {
-      toast.error("Ocurrió un error desconocido" || "", {
-        position: "top-right",
-        duration: 3000,
-      });
+      showFailToast("Ocurrió un error desconocido");
     } finally {
-      setOnProccess(false);
-      setModal(false);
+      setInProcess(false);
+      setModalState(false);
     }
   };
 
@@ -112,14 +103,15 @@ const UsersPage = () => {
           : null}
       </div>
       <AlertModal
-        showModal={modal}
-        offModal={() => setModal(false)}
-        onModal={() => setModal(true)}
+        showModal={modalState}
+        offModal={() => setModalState(false)}
+        onModal={() => setModalState(true)}
         title={
           userSelected?.status === 1
             ? "Inhabilitar Usuario"
             : "Habilitar Usuario"
         }
+        isWarning={userSelected?.status === 1}
         closeButton="Cerrar"
         successButton="Confirmar"
         onSuccess={handleChangeState}
@@ -128,7 +120,7 @@ const UsersPage = () => {
             ? "Al inhabilitar al usuario no podrá ingresar al sistema"
             : "Al habilitar al usuario podrá ingresar al sistema"
         }
-        disableButton={onProcess}
+        disableButton={inProcess}
       ></AlertModal>
     </>
   );

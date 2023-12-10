@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { FirebaseContext } from "../../firebase";
-import Orden from "../ui/Orden";
+import Orden from "./orders/Order";
 const Ordenes = () => {
   // context con las operaciones de firebase
   const { firebase } = useContext(FirebaseContext);
@@ -10,11 +10,11 @@ const Ordenes = () => {
   useEffect(() => {
     try {
       const obtenerOrdenes = () => {
-        firebase?.getDocumentsQueryRealtime(
-          "ordenes",
+        firebase?.getDocumentsByFilterInRealtime(
+          "orders",
           guardarOrdenes,
-          "completado",
-          false
+          "status",
+          1
         );
       };
       obtenerOrdenes();

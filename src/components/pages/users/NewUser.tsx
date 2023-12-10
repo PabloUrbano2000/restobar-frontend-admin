@@ -5,14 +5,14 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router";
 import { namesRegex } from "../../../utils/regex";
 import { Role } from "../../../types";
-import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { createSystemUser, getRoles } from "../../../services";
+import { showFailToast, showSuccessToast } from "../../../utils/toast";
 
 const NewUserPage = () => {
   // Hook para redireccionar
   const navigate = useNavigate();
-  const [onProccess, setOnProccess] = useState(false);
+  const [inProcess, setInProcess] = useState(false);
   const [roles, setRoles] = useState<Role[]>([]);
 
   useEffect(() => {
@@ -22,16 +22,10 @@ const NewUserPage = () => {
         if (data.status_code == 200) {
           setRoles(data.docs);
         } else {
-          toast.error("Ocurrió un error al cargar los roles", {
-            position: "top-right",
-            duration: 3000,
-          });
+          showFailToast("Ocurrió un error al cargar los roles");
         }
       } catch (error) {
-        toast.error("Ocurrió un error al cargar los roles", {
-          position: "top-right",
-          duration: 3000,
-        });
+        showFailToast("Ocurrió un error al cargar los roles");
       }
     };
     loadingCombo();
@@ -63,7 +57,7 @@ const NewUserPage = () => {
     }),
     onSubmit: async (values) => {
       try {
-        setOnProccess(true);
+        setInProcess(true);
 
         const data = await createSystemUser({
           email: values.email.toLowerCase(),
@@ -73,27 +67,18 @@ const NewUserPage = () => {
         });
 
         if (data.status_code == 200) {
-          toast.success(data.message || "Usuario registrado éxitosamente", {
-            position: "top-right",
-            duration: 3000,
-          });
+          showSuccessToast(data.message || "Usuario registrado éxitosamente");
           navigate("/usuarios", {
             replace: true,
           });
         } else {
-          toast.error(data.errors[0], {
-            position: "top-right",
-            duration: 3000,
-          });
+          showFailToast(data?.errors[0] || "");
         }
       } catch (error) {
         console.log(error);
-        toast.error("Ocurrió un error desconocido", {
-          position: "top-right",
-          duration: 3000,
-        });
+        showFailToast("Ocurrió un error desconocido");
       } finally {
-        setOnProccess(false);
+        setInProcess(false);
       }
     },
   });
@@ -232,7 +217,7 @@ const NewUserPage = () => {
 
             <input
               type={"submit"}
-              disabled={onProccess}
+              disabled={inProcess}
               className="bg-gray-800 hover:bg-gray-900 disabled:bg-gray-600 w-full mt-5 p-2 text-white uppercase font-bold cursor-pointer"
               value="Crear Usuario"
             />

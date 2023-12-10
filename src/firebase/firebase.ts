@@ -7,8 +7,8 @@ import {
   collection,
   onSnapshot,
   query,
-  where,
   Firestore,
+  limit,
 } from "firebase/firestore";
 
 import firebaseConfig from "./config";
@@ -25,34 +25,9 @@ class Firebase {
     this.db = getFirestore();
   }
 
-  // obtener documentos con query
-  getDocumentsByFilterInRealtime(
-    coleccion: string,
-    callback: Function,
-    param: string,
-    compare: unknown
-  ) {
-    const q = query(
-      collection(this.db, coleccion),
-      where(param, "==", compare)
-    );
-    onSnapshot(q, (querySnapshot) => {
-      const realtime = querySnapshot.docs.map((doc) => {
-        return { ...doc.data(), id: doc.id };
-      });
-      callback(realtime);
-    });
-  }
-
-  // obtener documentos en tiempo real
-  getAllDocumentsInRealtime(coleccion: string, callback: Function) {
-    const documentos = collection(this.db, coleccion);
-    onSnapshot(documentos, (querySnapshot) => {
-      const realtime = querySnapshot.docs.map((doc) => {
-        return { ...doc.data(), id: doc.id };
-      });
-      callback(realtime);
-    });
+  listenDocumentsUpdateInRealtime(coleccion: string, callback: Function) {
+    const q = query(collection(this.db, coleccion), limit(100));
+    onSnapshot(q, () => callback());
   }
 }
 

@@ -1,289 +1,228 @@
-import {
-  //  useState,
-  useContext,
-} from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { FirebaseContext } from "../../../firebase";
 import { useNavigate } from "react-router";
-
-// import FileUploader from "react-firebase-file-uploader";
+import { Category } from "../../../types";
+import { createProduct, getCategories } from "../../../services";
+import { showFailToast, showSuccessToast } from "../../../utils/toast";
+import { Link } from "react-router-dom";
+import { productExtendRegex } from "../../../utils/regex";
 
 const NewProduct = () => {
-  // state para las imagenes
-  // const [subiendo, guardarSubiendo] = useState(false);
-  // const [progreso, guardarProgreso] = useState(0);
-  // const [urlImagen, guardarUrlImagen] = useState("");
-
-  // Context con las operaciones de firebase
-  const { firebase } = useContext(FirebaseContext);
-
-  // Hook para redireccionar
+  // // Hook para redireccionar
   const navigate = useNavigate();
+
+  const [inProcess, setInProcess] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const loadingCombo = async () => {
+      try {
+        const data = await getCategories();
+        if (data.status_code == 200) {
+          setCategories(data.docs);
+        } else {
+          showFailToast("Ocurrió un error al cargar los categorías");
+        }
+      } catch (error) {
+        showFailToast("Ocurrió un error al cargar los categorías");
+      }
+    };
+    loadingCombo();
+  }, []);
 
   // validacion y leer los datos del formulario
   const formik = useFormik({
     initialValues: {
-      nombre: "",
-      precio: "",
-      categoria: "",
-      imagen: "",
-      descripcion: "",
-    },
-    initialErrors: {
-      nombre: "",
+      name: "",
+      price: "",
+      category: "",
+      description: "",
     },
     validationSchema: Yup.object({
-      nombre: Yup.string()
-        .min(3, "Los Platillos deben tener almenos 3 caracteres")
-        .required("El Nombre del platillo es obligotario"),
-      precio: Yup.number()
-        .min(1, "Debes agregar un número")
-        .required("El Precio del platillo es obligotario"),
-      categoria: Yup.string().required(
-        "La Categoría del platillo es obligotaria"
+      name: Yup.string()
+        .min(3, "El nombre debe tener entre 3 a 50 caracteres")
+        .max(50, "El nombredebe tener entre 3 a 50 caracteres")
+        .required("El nombre del producto es obligotario")
+        .matches(productExtendRegex, "Formato de name inválido"),
+      price: Yup.number()
+        .min(1, "El precio debe entre 1 a 1000")
+        .max(1000, "El precio debe entre 1 a 1000")
+        .required("El precio del producto es obligotario"),
+      category: Yup.string().required(
+        "La categoría del producto es obligatoria"
       ),
-      descripcion: Yup.string()
-        .min(10, "La descripción debe ser más larga")
-        .required("La descripción es obligatoria"),
+      description: Yup.string()
+        .min(10, "La descripción debe tener entre 10 a 100 caracteres")
+        .max(100, "La descripción debe tener entre 10 a 100 caracteres")
+        .required("La descripción del producto es obligatoria"),
     }),
-    onSubmit: async (datos) => {
+    onSubmit: async (values) => {
       try {
-        // para subir la imagen en firebase
-        // if (datos.imagen) {
-        //   const resImagen = firebase.uploadFile(datos.imagen);
+        setInProcess(true);
 
-        //   const urlImagen = await resImagen.ref.getDownloadURL();
-        //   if (urlImagen) {
-        //     console.log("La ruta de la imagen es:", urlImagen);
-        //   }
-        // }
+        const data = await createProduct({
+          name: values.name,
+          price: Number(values.price),
+          description: values.description,
+          category: values.category,
+        });
 
-        const newData: any = { ...datos };
-
-        // asignando la existencia del producto
-        newData.existencia = true;
-
-        // asignando la url de la imagen subida
-        // newData.imagen = urlImagen;
-
-        // le mando la colección donde debe crearse y el cuerpo como objeto
-        // const resultBody = await firebase?.insertDocument("productos", {
-        //   ...datos,
-        // });
-
-        // // en caso recibo un id quiere decir que se insertó
-        // if (resultBody.id) {
-        //   console.log("insercción de cuerpo correcta:", resultBody.id);
-        //   navigate("/menu", { replace: true });
-        // }
+        if (data.status_code == 200) {
+          showSuccessToast(data.message || "Producto registrado éxitosamente");
+          navigate("/productos", {
+            replace: true,
+          });
+        } else {
+          showFailToast(data?.errors[0] || "");
+        }
       } catch (error) {
         console.log(error);
+        showFailToast("Ocurrió un error desconocido");
+      } finally {
+        setInProcess(false);
       }
     },
   });
 
-  // Todo sobre las imagenes
-  // const handleUploadStart = () => {
-  //   guardarProgreso(0);
-  //   guardarSubiendo(true);
-  // };
-
-  // const handleUploadError = (error: any) => {
-  //   guardarSubiendo(false);
-  //   console.log(error);
-  // };
-
-  // const handleUploadSuccess = async (nom: any) => {
-  //   guardarProgreso(100);
-  //   guardarSubiendo(false);
-
-  //   // Almacenar la URL de destino
-  //   const url = await firebase?.storage
-  //     .ref("productos")
-  //     .child(nom)
-  //     .getDownloadURL();
-  //   console.log(url);
-  //   guardarUrlImagen(url);
-  // };
-
-  // const handleProgress = (prog: any) => {
-  //   guardarProgreso(prog);
-  //   console.log(prog);
-  // };
-
   return (
     <>
-      <h1 className="text-3xl font-light mb-4">Agregar Platillo</h1>
+      <div className="container flex px-4">
+        <h1 className="font-bold text-3xl">Crear Producto</h1>
+        <Link
+          to={"/productos"}
+          replace
+          className="ml-auto rounded bg-slate-900 py-2 px-4 text-lg text-white text-normal font-bold"
+        >
+          Volver
+        </Link>
+      </div>
       <div className="flex justify-center mt-10">
         <div className="w-full max-w-3xl">
           <form onSubmit={formik.handleSubmit}>
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="nombre"
+                htmlFor="name"
               >
                 Nombre
               </label>
               <input
-                id="nombre"
+                id="name"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                placeholder="Nombre Platillo"
-                value={formik.values.nombre}
+                placeholder="Nombre producto"
+                value={formik.values.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
             </div>
-            {formik.touched.nombre && formik.errors.nombre ? (
+            {formik.touched.name && formik.errors.name ? (
               <div
                 className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-5"
                 role={"alert"}
               >
                 <p className="font-bold">Hubo un error:</p>
-                <p className="">{formik?.errors?.nombre}</p>
+                <p className="">{formik?.errors?.name}</p>
               </div>
             ) : null}
 
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="precio"
+                htmlFor="price"
               >
                 Precio
               </label>
               <input
-                id="precio"
+                id="price"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="number"
-                placeholder="$20"
+                placeholder="S/. 20"
                 min="0"
-                value={formik.values.precio}
+                max="1000"
+                value={formik.values.price}
                 onChange={formik.handleChange}
-                step={"any"}
+                step={0.01}
                 onBlur={formik.handleBlur}
               />
             </div>
-            {formik.touched.precio && formik.errors.precio ? (
+            {formik.touched.price && formik.errors.price ? (
               <div
                 className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-5"
                 role={"alert"}
               >
                 <p className="font-bold">Hubo un error:</p>
-                <p className="">{formik.errors.precio}</p>
+                <p className="">{formik.errors.price}</p>
               </div>
             ) : null}
 
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="categoria"
+                htmlFor="category"
               >
                 Categoría
               </label>
               <select
-                id="categoria"
-                name="categoria"
-                value={formik.values.categoria}
+                id="category"
+                name="category"
+                value={formik.values.category}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               >
                 <option value={""}>-- Seleccione --</option>
-                <option value={"desayuno"}>Desayuno</option>
-                <option value={"comida"}>Comida</option>
-                <option value={"cena"}>Cena</option>
-                <option value={"bebidas"}>Bebidas</option>
-                <option value={"postre"}>Postre</option>
-                <option value={"ensalada"}>Ensalada</option>
+                {categories.length > 0
+                  ? categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))
+                  : null}
               </select>
             </div>
-            {formik.touched.categoria && formik.errors.categoria ? (
+            {formik.touched.category && formik.errors.category ? (
               <div
                 className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-5"
                 role={"alert"}
               >
                 <p className="font-bold">Hubo un error:</p>
-                <p className="">{formik.errors.categoria}</p>
+                <p className="">{formik.errors.category}</p>
               </div>
             ) : null}
 
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="imagen"
-              >
-                Imagen
-              </label>
-              {/* <input
-                id="imagen"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="file"
-                accept="image/*"
-                value={formik.values.imagen}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              /> */}
-              {/* <FileUploader
-                accept="image/*"
-                id="imagen"
-                name="imagen"
-                randomizeFilename
-                storageRef={firebase.storage.ref("productos")}
-                onUploadStart={handleUploadStart}
-                onUploadError={handleUploadError}
-                onUploadSuccess={handleUploadSuccess}
-                onProgress={handleProgress}
-              /> */}
-            </div>
-
-            {/* {subiendo && (
-              <div className="h-12 relative w-full border">
-                <div
-                  className="bg-green-500 absolute left-0 top-0 text-white px-2 text-sm h-12 flex items-center"
-                  style={{ width: `${progreso}%` }}
-                >
-                  {progreso} %
-                </div>
-              </div>
-            )} */}
-
-            {/* {urlImagen && (
-              <p className="bg-green-500 text-white p-3 text-center my-5">
-                La imagen se subió correctamente
-              </p>
-            )} */}
-
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="nombre"
+                htmlFor="name"
               >
                 Descripción
               </label>
               <textarea
-                id="descripcion"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-40"
-                placeholder="Descripción del Platillo"
-                value={formik.values.descripcion}
+                id="description"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32"
+                placeholder="Descripción del producto"
+                value={formik.values.description}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
             </div>
-            {formik.touched.descripcion && formik.errors.descripcion ? (
+            {formik.touched.description && formik.errors.description ? (
               <div
                 className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-5"
                 role={"alert"}
               >
                 <p className="font-bold">Hubo un error:</p>
-                <p className="">{formik.errors.descripcion}</p>
+                <p className="">{formik.errors.description}</p>
               </div>
             ) : null}
             <input
               type={"submit"}
-              className="bg-gray-800 hover:bg-gray-900 w-full mt-5 p-2 text-white uppercase font-bold cursor-pointer"
-              value="Agregar Platillo"
+              disabled={inProcess}
+              className="bg-gray-800 hover:bg-gray-900 disabled:bg-gray-600 w-full mt-5 p-2 text-white uppercase font-bold cursor-pointer"
+              value="Crear Producto"
             />
           </form>
         </div>

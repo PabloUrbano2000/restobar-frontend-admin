@@ -1,5 +1,4 @@
 import React from "react";
-import toast from "react-hot-toast";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -9,13 +8,14 @@ import { SystemUser } from "../../../types";
 import { Link, useSearchParams } from "react-router-dom";
 import Spinner from "../../ui/Spinner";
 import { changePassword, verifyPasswordToken } from "../../../services";
+import { showFailToast, showSuccessToast } from "../../../utils/toast";
 
 const RestorePasswordPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = React.useState(true);
   const [isValidToken, setIsValidToken] = React.useState(false);
-  const [onProccess, setOnProccess] = React.useState(false);
+  const [inProcess, setInProcess] = React.useState(false);
 
   React.useEffect(() => {
     const verifyPassToken = async () => {
@@ -54,7 +54,7 @@ const RestorePasswordPage = () => {
     }),
     onSubmit: async ({ password, confirm_password }) => {
       try {
-        setOnProccess(true);
+        setInProcess(true);
 
         const token = searchParams.get("token");
 
@@ -65,25 +65,16 @@ const RestorePasswordPage = () => {
         });
 
         if (data.status_code == 200) {
-          toast.success(data.message || "", {
-            position: "top-right",
-            duration: 3000,
-          });
+          showSuccessToast(data.message || "");
 
           navigate("/auth/login", { replace: true });
         } else {
-          toast.error(data?.errors[0], {
-            position: "top-right",
-            duration: 3000,
-          });
+          showFailToast(data?.errors[0] || "");
         }
       } catch (error) {
-        toast.error("Ocurrió un error desconocido", {
-          position: "top-right",
-          duration: 3000,
-        });
+        showFailToast("Ocurrió un error desconocido");
       } finally {
-        setOnProccess(false);
+        setInProcess(false);
       }
     },
   });
@@ -185,7 +176,7 @@ const RestorePasswordPage = () => {
                 </Link>
                 <input
                   type={"submit"}
-                  disabled={onProccess}
+                  disabled={inProcess}
                   className="bg-gray-800 hover:bg-gray-900 disabled:bg-gray-600 w-full mt-5 p-2 text-white uppercase font-bold cursor-pointer"
                   value="Cambiar contraseña"
                 />

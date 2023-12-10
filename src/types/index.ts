@@ -39,6 +39,7 @@ export type Product = {
   price?: number;
   available?: Available;
   description?: string;
+  image?: string;
   status?: Status;
   category?: Category;
   created_date?: Date | string;
@@ -120,8 +121,6 @@ export type User = {
 };
 
 export type UserToken = {
-  // id?: string;
-  // user?: User;
   access_token: string;
   refresh_token: string;
 };
@@ -132,10 +131,25 @@ export type UserToken = {
  * 2: En Proceso
  * 3: Entregado | Cancelado
  */
-type OrderStatus = 0 | 1 | 2 | 3;
-type OrderType = "COMER EN LOCAL" | "PARA LLEVAR";
-type PaymentMethod = "AL CONTADO" | "VISA" | "MASTERCARD";
-type OrderChannel = "APP" | "PRESENCIAL";
+export enum OrderStatus {
+  "ANULLED" = 0,
+  "PENDING" = 1,
+  "IN_PROCESS" = 2,
+  "DEVOTED" = 3,
+}
+export enum OrderType {
+  "IN_LOCAL" = "COMER EN LOCAL",
+  "TAKEAWAY" = "PARA LLEVAR",
+}
+export enum PaymentMethod {
+  "CASH" = "AL CONTADO",
+  "VISA" = "VISA",
+  "MASTERCARD" = "MASTERCARD",
+}
+export enum OrderChannel {
+  "APP" = "APP",
+  "PRESENCIAL" = "PRESENCIAL",
+}
 
 export type Order = {
   id: string;
@@ -149,6 +163,7 @@ export type Order = {
   recepcionist: SystemUser;
   reception_date: Date | string;
   payment_method: PaymentMethod;
+  estimated_time: number;
   tax: number;
   subtotal: number;
   total: number;
@@ -157,13 +172,10 @@ export type Order = {
   items: OrderDetail[];
 };
 
-type Delivered = 0 | 1;
-
 export type OrderDetail = {
   id: string;
   order: Order;
   product: Product;
   quantity: number;
   price_of_sale: number;
-  delivered: Delivered;
 };

@@ -2,7 +2,7 @@
 
 import { enviroments } from "../env";
 import { DocumentResponse, PaginateResponse } from "../interfaces";
-import { Role, SystemUser } from "../types";
+import { Category, Order, Product, Role, SystemUser } from "../types";
 import { COOKIE_TOKEN } from "../utils/constants";
 import { getCookie } from "../utils/cookies";
 
@@ -237,5 +237,245 @@ export const disableSystemUser = async (
       }),
     }
   );
+  return await result.json();
+};
+
+export const getCategories = async (): Promise<PaginateResponse<Category>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/category/list`, {
+    method: "POST",
+    headers: { "x-access-token": getCookie(COOKIE_TOKEN) || "" },
+  });
+  return await result.json();
+};
+
+export const getProducts = async (): Promise<PaginateResponse<Product>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/product/list`, {
+    method: "POST",
+    headers: {
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      "Content-type": "application/json",
+    },
+  });
+  return await result.json();
+};
+
+export const getProductById = async (
+  id: string
+): Promise<DocumentResponse<Product>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/product/get`, {
+    method: "POST",
+    headers: {
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({ id }),
+  });
+  return await result.json();
+};
+
+export const createProduct = async (
+  data: Product & {
+    category: string;
+  }
+): Promise<DocumentResponse<Category>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/product/create`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+    },
+    body: JSON.stringify({
+      name: data?.name?.toLowerCase().trim(),
+      category: data?.category,
+      description: data?.description,
+      price: data.price,
+    }),
+  });
+  return await result.json();
+};
+
+export const updateProductById = async (
+  data: Product & {
+    category: string;
+  }
+): Promise<DocumentResponse<SystemUser>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/product/update`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+    },
+    body: JSON.stringify({
+      id: data?.id,
+      name: data?.name,
+      category: data?.category,
+      description: data?.description,
+      price: data.price,
+    }),
+  });
+  return await result.json();
+};
+
+export const uploadImageProductById = async (
+  body: FormData
+): Promise<DocumentResponse<Product>> => {
+  const result = await fetch(
+    `${enviroments.API_URL}/admin/product/image/upload`,
+    {
+      method: "PUT",
+      headers: {
+        "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      },
+      body,
+    }
+  );
+  return await result.json();
+};
+
+export const deleteImageProductById = async (
+  id: string
+): Promise<DocumentResponse<Product>> => {
+  const result = await fetch(
+    `${enviroments.API_URL}/admin/product/image/delete`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      },
+      body: JSON.stringify({
+        id,
+      }),
+    }
+  );
+  return await result.json();
+};
+
+export const enableProduct = async (
+  id: string
+): Promise<DocumentResponse<Product>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/product/enable`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+    },
+    body: JSON.stringify({
+      id,
+    }),
+  });
+  return await result.json();
+};
+
+export const disableProduct = async (
+  id: string
+): Promise<DocumentResponse<Product>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/product/disable`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+    },
+    body: JSON.stringify({
+      id,
+    }),
+  });
+  return await result.json();
+};
+
+export const availableProduct = async (
+  id: string
+): Promise<DocumentResponse<Product>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/product/available`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+    },
+    body: JSON.stringify({
+      id,
+    }),
+  });
+  return await result.json();
+};
+
+export const unavailableProduct = async (
+  id: string
+): Promise<DocumentResponse<Product>> => {
+  const result = await fetch(
+    `${enviroments.API_URL}/admin/product/unavailable`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      },
+      body: JSON.stringify({
+        id,
+      }),
+    }
+  );
+  return await result.json();
+};
+
+export const getOrders = async (): Promise<PaginateResponse<Order>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/order/list`, {
+    method: "POST",
+    headers: {
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({
+      limit: 100,
+    }),
+  });
+  return await result.json();
+};
+
+export const getOrderById = async (
+  id: string
+): Promise<DocumentResponse<Order>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/order/get`, {
+    method: "POST",
+    headers: {
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({ id }),
+  });
+  return await result.json();
+};
+
+export const inProcessOrder = async (
+  id: string,
+  estimated_time: number
+): Promise<DocumentResponse<Order>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/order/in-process`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+    },
+    body: JSON.stringify({
+      id,
+      estimated_time,
+    }),
+  });
+  return await result.json();
+};
+
+export const terminateOrder = async (
+  id: string
+): Promise<DocumentResponse<Order>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/order/terminate`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+    },
+    body: JSON.stringify({
+      id,
+    }),
+  });
   return await result.json();
 };

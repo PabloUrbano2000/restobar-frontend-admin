@@ -12,10 +12,10 @@ const Sidebar = () => {
     >
       <div className="p-6">
         <p className="uppercase text-white text-2xl tracking-wide text-center font-bold">
-          RestaurantApp
+          RestobarAdmin
         </p>
         <p className="mt-3 text-gray-500">
-          Administra tu restaurant en las siguientes opciones:
+          Administra tu restobar en las siguientes opciones:
         </p>
         <nav className="mt-10">
           {routes.map((router) => (

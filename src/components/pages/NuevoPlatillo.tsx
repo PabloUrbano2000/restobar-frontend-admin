@@ -1,12 +1,12 @@
-import {
-  // useState,
-  useContext,
-} from "react";
+// import {
+//   // useState,
+//   useContext,
+// } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { FirebaseContext } from "../../firebase";
-import { useNavigate } from "react-router";
+// import { FirebaseContext } from "../../firebase";
+// import { useNavigate } from "react-router";
 
 // import FileUploader from "react-firebase-file-uploader";
 
@@ -17,10 +17,10 @@ const NuevoPlatillo = () => {
   // const [urlImagen, guardarUrlImagen] = useState("");
 
   // Context con las operaciones de firebase
-  const { firebase } = useContext(FirebaseContext);
+  // const { firebase } = useContext(FirebaseContext);
 
-  // Hook para redireccionar
-  const navigate = useNavigate();
+  // // Hook para redireccionar
+  // const navigate = useNavigate();
 
   // validacion y leer los datos del formulario
   const formik = useFormik({
@@ -69,15 +69,15 @@ const NuevoPlatillo = () => {
         // newData.imagen = urlImagen;
 
         // le mando la colección donde debe crearse y el cuerpo como objeto
-        const resultBody = await firebase?.insertDocument("productos", {
-          ...datos,
-        });
+        // const resultBody = await firebase?.insertDocument("productos", {
+        //   ...datos,
+        // });
 
-        // en caso recibo un id quiere decir que se insertó
-        if (resultBody.id) {
-          console.log("insercción de cuerpo correcta:", resultBody.id);
-          navigate("/menu", { replace: true });
-        }
+        // // en caso recibo un id quiere decir que se insertó
+        // if (resultBody.id) {
+        //   console.log("insercción de cuerpo correcta:", resultBody.id);
+        //   navigate("/menu", { replace: true });
+        // }
       } catch (error) {
         console.log(error);
       }

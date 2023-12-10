@@ -1,15 +1,15 @@
 import React from "react";
-import toast from "react-hot-toast";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { recoveryPassword } from "../../../services";
+import { showFailToast, showSuccessToast } from "../../../utils/toast";
 
 const RecoveryPasswordPage = () => {
   const navigate = useNavigate();
-  const [onProccess, setOnProccess] = React.useState(false);
+  const [inProcess, setInProcess] = React.useState(false);
 
   // validacion y leer los datos del formulario
   const formik = useFormik({
@@ -23,32 +23,23 @@ const RecoveryPasswordPage = () => {
     }),
     onSubmit: async ({ email }) => {
       try {
-        setOnProccess(true);
+        setInProcess(true);
 
         const data = await recoveryPassword({
           email,
         });
 
         if (data.status_code == 200) {
-          toast.success(data.message || "", {
-            position: "top-right",
-            duration: 3000,
-          });
+          showSuccessToast(data.message || "");
 
           navigate("/auth/login", { replace: true });
         } else {
-          toast.error(data?.errors[0], {
-            position: "top-right",
-            duration: 3000,
-          });
+          showFailToast(data?.errors[0]);
         }
       } catch (error) {
-        toast.error("Ocurrió un error desconocido", {
-          position: "top-right",
-          duration: 3000,
-        });
+        showFailToast("Ocurrió un error desconocido");
       } finally {
-        setOnProccess(false);
+        setInProcess(false);
       }
     },
   });
@@ -100,7 +91,7 @@ const RecoveryPasswordPage = () => {
             </Link>
             <input
               type={"submit"}
-              disabled={onProccess}
+              disabled={inProcess}
               className="bg-gray-800 hover:bg-gray-900 disabled:bg-gray-600 w-full mt-5 p-2 text-white uppercase font-bold cursor-pointer"
               value="Recuperar contraseña"
             />

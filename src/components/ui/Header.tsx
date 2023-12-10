@@ -25,6 +25,7 @@ const Header = () => {
         padding: "0 25px",
         position: "sticky",
         top: 0,
+        zIndex: 10,
       }}
     >
       <div className="flex items-center flex-col justify-center">

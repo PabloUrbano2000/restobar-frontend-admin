@@ -19,6 +19,9 @@ export interface DocumentResponse<T> {
   message?: string;
   data?: {
     user?: T;
+    reception?: T;
+    product?: T;
+    order?: T;
     access_token?: string;
     refresh_token?: string;
   };

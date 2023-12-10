@@ -1,6 +1,5 @@
 import React from "react";
 import { useFormik } from "formik";
-import toast from "react-hot-toast";
 import * as Yup from "yup";
 
 import { useNavigate } from "react-router";
@@ -11,11 +10,12 @@ import { setCookie } from "../../../utils/cookies";
 import { COOKIE_REFRESH_TOKEN, COOKIE_TOKEN } from "../../../utils/constants";
 import { Link } from "react-router-dom";
 import { loginSystemUser, recoveryAccount } from "../../../services";
+import { showFailToast, showSuccessToast } from "../../../utils/toast";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const { updateAuth } = useAuthContext();
-  const [onProccess, setOnProccess] = React.useState(false);
+  const [inProcess, setInProcess] = React.useState(false);
   const [showVerify, setShowVerify] = React.useState(false);
   const [email, setEmail] = React.useState("");
 
@@ -33,7 +33,7 @@ const LoginPage = () => {
     }),
     onSubmit: async (values) => {
       try {
-        setOnProccess(true);
+        setInProcess(true);
         setShowVerify(false);
         setEmail(values.email);
         const data = await loginSystemUser({
@@ -42,10 +42,7 @@ const LoginPage = () => {
         });
 
         if (data.status_code == 200) {
-          toast.success("Inicio de sesión éxitoso", {
-            position: "top-right",
-            duration: 3000,
-          });
+          showSuccessToast("Inicio de sesión éxitoso");
 
           setCookie(COOKIE_TOKEN, data.data?.access_token || "");
           setCookie(COOKIE_REFRESH_TOKEN, data.data?.refresh_token || "");
@@ -54,25 +51,16 @@ const LoginPage = () => {
           navigate("/", { replace: true });
         } else {
           if (data.error_code == "USER_NOT_VERIFIED") {
-            toast.error(data?.errors[0], {
-              position: "top-right",
-              duration: 3000,
-            });
+            showFailToast(data?.errors[0]);
             setShowVerify(true);
           } else {
-            toast.error(data?.errors[0], {
-              position: "top-right",
-              duration: 3000,
-            });
+            showFailToast(data?.errors[0]);
           }
         }
       } catch (error) {
-        toast.error("Ocurrió un error desconocido", {
-          position: "top-right",
-          duration: 3000,
-        });
+        showFailToast("Ocurrió un error desconocido");
       } finally {
-        setOnProccess(false);
+        setInProcess(false);
       }
     },
   });
@@ -80,7 +68,7 @@ const LoginPage = () => {
   const sendVerifyAccount = async () => {
     try {
       setShowVerify(false);
-      setOnProccess(true);
+      setInProcess(true);
 
       const data: DocumentResponse<SystemUser> = await recoveryAccount({
         email,
@@ -88,24 +76,14 @@ const LoginPage = () => {
 
       if (data.status_code == 200) {
         console.log("resultado", data);
-
-        toast.success(data.message || "", {
-          position: "top-right",
-          duration: 3000,
-        });
+        showSuccessToast(data.message || "");
       } else {
-        toast.error(data?.errors[0], {
-          position: "top-right",
-          duration: 3000,
-        });
+        showFailToast(data?.errors[0] || "");
       }
     } catch (error) {
-      toast.error("Ocurrió un error desconocido", {
-        position: "top-right",
-        duration: 3000,
-      });
+      showFailToast("Ocurrió un error desconocido");
     } finally {
-      setOnProccess(false);
+      setInProcess(false);
     }
   };
 
@@ -202,7 +180,7 @@ const LoginPage = () => {
             </div>
             <input
               type={"submit"}
-              disabled={onProccess}
+              disabled={inProcess}
               className="bg-gray-800 hover:bg-gray-900 disabled:bg-gray-600 w-full mt-5 p-2 text-white uppercase font-bold cursor-pointer"
               value="Iniciar Sesión"
             />

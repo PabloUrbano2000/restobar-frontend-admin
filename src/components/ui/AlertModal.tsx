@@ -1,4 +1,3 @@
-// import { useState } from "react";
 import {
   TERipple,
   TEModal,
@@ -14,6 +13,7 @@ interface AlertModalProps {
   onModal: () => void;
   offModal: () => void;
   showModal: boolean;
+  isWarning?: boolean;
   title: string;
   description?: string;
   closeButton?: string;
@@ -27,6 +27,7 @@ export default function AlertModal({
   title,
   showModal,
   onModal,
+  isWarning = false,
   description = "",
   closeButton = "",
   successButton = "",
@@ -88,7 +89,15 @@ export default function AlertModal({
                 <button
                   type="button"
                   disabled={disableButton}
-                  className="ml-1 inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 disabled:bg-primary-400 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  className={`ml-1 inline-block rounded px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]   focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]
+                  ${
+                    isWarning
+                      ? "bg-red-600 hover:bg-red-700 focus:bg-red-700 disabled:bg-red-400 active:bg-red-800"
+                      : " bg-primary hover:bg-primary-600 focus:bg-primary-600 disabled:bg-primary-400 active:bg-primary-700"
+                  }`}
+                  style={{
+                    boxShadow: "none",
+                  }}
                   onClick={() => onSuccess()}
                 >
                   {successButton}

@@ -5,19 +5,19 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router";
 import { namesRegex } from "../../../utils/regex";
 import { Role, SystemUser } from "../../../types";
-import toast from "react-hot-toast";
 import { Link, useParams } from "react-router-dom";
 import {
   updateSystemUserById,
   getRoles,
   getSystemUserById,
 } from "../../../services";
+import { showFailToast } from "../../../utils/toast";
 
 const EditUserPage = () => {
   // Hook para redireccionar
   const navigate = useNavigate();
   const params = useParams();
-  const [onProccess, setOnProccess] = useState(false);
+  const [inProcess, setInProcess] = useState(false);
   const [roles, setRoles] = useState<Role[]>([]);
   const [systemUser, setSystemUser] = useState<SystemUser | null>(null);
 
@@ -44,7 +44,7 @@ const EditUserPage = () => {
     }),
     onSubmit: async (values) => {
       try {
-        setOnProccess(true);
+        setInProcess(true);
 
         const data = await updateSystemUserById({
           id: params.id,
@@ -54,27 +54,18 @@ const EditUserPage = () => {
         });
 
         if (data.status_code == 200) {
-          toast.success(data.message || "Usuario actualizado éxitosamente", {
-            position: "top-right",
-            duration: 3000,
-          });
+          showFailToast(data.message || "Usuario actualizado éxitosamente");
           navigate("/usuarios", {
             replace: true,
           });
         } else {
-          toast.error(data.errors[0], {
-            position: "top-right",
-            duration: 3000,
-          });
+          showFailToast(data.errors[0] || "");
         }
       } catch (error) {
         console.log(error);
-        toast.error("Ocurrió un error desconocido", {
-          position: "top-right",
-          duration: 3000,
-        });
+        showFailToast("Ocurrió un error desconocido");
       } finally {
-        setOnProccess(false);
+        setInProcess(false);
       }
     },
   });
@@ -82,7 +73,7 @@ const EditUserPage = () => {
   useEffect(() => {
     if (params.id) {
       const getUser = async () => {
-        setOnProccess(true);
+        setInProcess(true);
         const data = await getSystemUserById(params?.id || "");
         if (data.status_code == 200) {
           const { user = {} } = data.data || {};
@@ -92,7 +83,7 @@ const EditUserPage = () => {
           formik.setFieldValue("email", user.email);
           formik.setFieldValue("role", user.role?.id);
 
-          setOnProccess(false);
+          setInProcess(false);
         } else {
           navigate("/usuarios", { replace: true });
         }
@@ -107,23 +98,17 @@ const EditUserPage = () => {
     if (systemUser) {
       const loadingCombo = async () => {
         try {
-          setOnProccess(true);
+          setInProcess(true);
 
           const data = await getRoles();
           if (data.status_code == 200) {
             setRoles(data.docs);
           } else {
-            toast.error("Ocurrió un error al cargar los roles", {
-              position: "top-right",
-              duration: 3000,
-            });
+            showFailToast("Ocurrió un error al cargar los roles");
           }
-          setOnProccess(false);
+          setInProcess(false);
         } catch (error) {
-          toast.error("Ocurrió un error al cargar los roles", {
-            position: "top-right",
-            duration: 3000,
-          });
+          showFailToast("Ocurrió un error al cargar los roles");
         }
       };
       loadingCombo();
@@ -264,7 +249,7 @@ const EditUserPage = () => {
 
             <input
               type={"submit"}
-              disabled={onProccess}
+              disabled={inProcess}
               className="bg-gray-800 hover:bg-gray-900 disabled:bg-gray-600 w-full mt-5 p-2 text-white uppercase font-bold cursor-pointer"
               value="Modificar Usuario"
             />
