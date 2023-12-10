@@ -1,9 +1,15 @@
+import { useEffect } from "react";
+import { generateLastPath } from "../../utils/session";
+
 const HomePage = () => {
+  useEffect(() => {
+    generateLastPath();
+  }, []);
   return (
     <>
       <div className="flex flex-col container py-12 px-4 mx-auto">
         <h1 className="text-center font-bold text-6xl mb-14">
-          Hola Usuario :)
+          Hola Usuario :{")"}
         </h1>
         <h2 className="text-center font-bold text-lg mb-14">
           Esta es la página principal, por favor selecciona un módulo de la
