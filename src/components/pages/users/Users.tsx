@@ -81,12 +81,14 @@ const UsersPage = () => {
 
   return (
     <>
-      <div className="container flex px-4">
-        <h1 className="font-bold text-lg">Usuarios del sistema</h1>
+      <div className="flex flex-col md:flex-row container px-4 mx-auto">
+        <h1 className="text-center md:text-left font-bold text-lg">
+          Usuarios del sistema
+        </h1>
         <Link
           to={"/usuarios/nuevo"}
           replace
-          className="ml-auto rounded bg-slate-900 py-2 px-4 text-lg text-white text-normal font-bold"
+          className="w-full md:w-auto text-center ml-auto rounded bg-slate-900 py-2 px-4 text-lg text-white text-normal font-bold"
         >
           Crear usuario
         </Link>

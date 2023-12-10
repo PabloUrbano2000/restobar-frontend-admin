@@ -60,21 +60,23 @@ const DetailOrder = () => {
 
   return (
     <>
-      <div className="container flex px-4">
-        <h1 className="font-bold text-3xl">Detalle de la Orden</h1>
+      <div className="flex flex-col md:flex-row container px-4 gap-y-2 mx-auto">
+        <h1 className="text-center md:text-left font-bold text-3xl">
+          Detalle de la Orden
+        </h1>
 
         <Link
           to={"/pedidos"}
           replace
-          className="ml-auto rounded bg-slate-900 py-2 px-4 text-lg text-white text-normal font-bold"
+          className="w-full md:w-auto text-center ml-auto rounded bg-slate-900 py-2 px-4 text-lg text-white text-normal font-bold"
         >
           Volver
         </Link>
       </div>
-      <div className="flex justify-center mt-10">
+      <div className="flex justify-center mt-10 px-4">
         <div className="w-full max-w-3xl">
-          <div className="md:columns-2 xl:columns-3 gap-4 flex mb-4">
-            <div>
+          <div className="flex-col lg:flex-row lg:columns-2 gap-4 xl:columns-3 flex mb-4">
+            <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="order_number"
@@ -89,7 +91,7 @@ const DetailOrder = () => {
                 defaultValue={order?.order_number}
               />
             </div>
-            <div>
+            <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="client"
@@ -105,7 +107,7 @@ const DetailOrder = () => {
               />
             </div>
 
-            <div>
+            <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="reception"
@@ -122,8 +124,8 @@ const DetailOrder = () => {
             </div>
           </div>
 
-          <div className="md:columns-2 xl:columns-3 gap-4 flex mb-4">
-            <div>
+          <div className="flex-col lg:flex-row lg:columns-2 xl:columns-3 gap-4 flex mb-4">
+            <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="payment_method"
@@ -138,7 +140,7 @@ const DetailOrder = () => {
                 defaultValue={order?.payment_method || ""}
               />
             </div>
-            <div>
+            <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="order_channel"
@@ -153,7 +155,7 @@ const DetailOrder = () => {
                 defaultValue={order?.order_channel || ""}
               />
             </div>
-            <div>
+            <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="status"
@@ -170,8 +172,8 @@ const DetailOrder = () => {
             </div>
           </div>
 
-          <div className="md:columns-2 xl:columns-3 gap-4 flex mb-4">
-            <div>
+          <div className="flex-col lg:flex-row lg:columns-2 xl:columns-3 gap-4 flex mb-4">
+            <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="reception_date"
@@ -186,7 +188,7 @@ const DetailOrder = () => {
                 defaultValue={receptionDate}
               />
             </div>
-            <div>
+            <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="end_date"
@@ -203,8 +205,8 @@ const DetailOrder = () => {
             </div>
           </div>
 
-          <div className="md:columns-2 xl:columns-3 gap-4 flex mb-4">
-            <div>
+          <div className="flex-col lg:flex-row lg:columns-2 xl:columns-3 gap-4 flex mb-4">
+            <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="subtotal"
@@ -219,7 +221,7 @@ const DetailOrder = () => {
                 defaultValue={order?.subtotal?.toFixed(2)}
               />
             </div>
-            <div>
+            <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="total"
@@ -236,39 +238,46 @@ const DetailOrder = () => {
             </div>
           </div>
 
-          <div className="mb-4">
+          <div className="mb-4 overflow-auto">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="items"
             >
               Productos ordenados
             </label>
-            <table className="table-fixed w-full">
-              <thead>
-                <tr>
-                  <th className="text-center">Item</th>
-                  <th className="text-center">Nombre</th>
-                  <th className="text-center">Precio de venta</th>
-                  <th className="text-center">Cantidad</th>
-                </tr>
-              </thead>
-              <tbody>
-                {order?.items?.map((item) => {
-                  return (
-                    <tr key={item.id}>
-                      <td className="text-center">{item.product.id}</td>
-                      <td className="text-center">{item.product.name}</td>
-                      <td className="text-center">
-                        {item.price_of_sale.toFixed(2)}
-                      </td>
-                      <td className="text-center">
-                        {item.quantity.toString()}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <div className="overflow-auto w-full">
+              <table
+                className="table-fixed w-full overflow-auto"
+                style={{
+                  minWidth: 600,
+                }}
+              >
+                <thead>
+                  <tr>
+                    <th className="text-center">Item</th>
+                    <th className="text-center">Nombre</th>
+                    <th className="text-center">Precio de venta</th>
+                    <th className="text-center">Cantidad</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {order?.items?.map((item) => {
+                    return (
+                      <tr key={item.id}>
+                        <td className="text-center">{item.product.id}</td>
+                        <td className="text-center">{item.product.name}</td>
+                        <td className="text-center">
+                          {item.price_of_sale.toFixed(2)}
+                        </td>
+                        <td className="text-center">
+                          {item.quantity.toString()}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

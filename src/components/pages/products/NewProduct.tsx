@@ -88,17 +88,20 @@ const NewProduct = () => {
 
   return (
     <>
-      <div className="container flex px-4">
-        <h1 className="font-bold text-3xl">Crear Producto</h1>
+      <div className="flex flex-col md:flex-row container px-4 gap-y-2 mx-auto">
+        <h1 className="text-center md:text-left font-bold text-3xl">
+          Crear producto
+        </h1>
+
         <Link
           to={"/productos"}
           replace
-          className="ml-auto rounded bg-slate-900 py-2 px-4 text-lg text-white text-normal font-bold"
+          className="w-full md:w-auto text-center ml-auto rounded bg-slate-900 py-2 px-4 text-lg text-white text-normal font-bold"
         >
           Volver
         </Link>
       </div>
-      <div className="flex justify-center mt-10">
+      <div className="flex justify-center mt-10 px-4">
         <div className="w-full max-w-3xl">
           <form onSubmit={formik.handleSubmit}>
             <div className="mb-4">

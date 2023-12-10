@@ -18,34 +18,31 @@ const Header = () => {
 
   return (
     <header
-      className="flex w-full gap-3"
+      className="flex w-full gap-3 sticky top-0 z-10 px-6"
       style={{
         backgroundColor: "#181924",
         height: "10vh",
-        padding: "0 25px",
-        position: "sticky",
-        top: 0,
-        zIndex: 10,
       }}
     >
-      <div className="flex items-center flex-col justify-center">
+      <div className="hidden md:flex items-center flex-col justify-center">
         <p className="text-white text-center">
-          <span className="font-semibold">Rol:</span> {user?.role?.alias}
+          <span className="hidden xl:inline font-semibold">Rol:</span>{" "}
+          {user?.role?.alias}
         </p>
       </div>
-      <div className="flex items-center flex-col justify-center">
+      <div className="hidden md:flex items-center flex-col justify-center">
         <p className="text-white text-center">
-          <span className="font-semibold">Usuario:</span> {user?.first_name}{" "}
-          {user?.last_name}
+          <span className="hidden xl:inline font-semibold">Usuario:</span>{" "}
+          {user?.first_name} {user?.last_name}
         </p>
       </div>
       <div className="flex items-center flex-col justify-center ml-auto">
         {user ? (
           <button
-            className="text-white font-medium p-2 rounded-md"
-            style={{
-              background: "cornflowerblue",
-            }}
+            className="text-white font-medium p-2 rounded-md bg-sky-900 hover:bg-sky-950"
+            // style={{
+            //   background: "cornflowerblue",
+            // }}
             onClick={logout}
           >
             Cerrar Sesión

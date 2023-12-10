@@ -16,8 +16,8 @@ const UserItem = ({ user, onConfirm }: UserItemProps) => {
 
   return (
     <div className="w-full lg:w-2/4 xl:w-1/3 px-4 mb-4">
-      <div className="p-3 py-5 shadow-md bg-white w-full flex relative">
-        <div className="sm:w-1/3 rounded-full flex h-auto flex-col">
+      <div className="flex flex-col md:flex-row p-3 py-5 shadow-md bg-white w-full relative">
+        <div className="md:w-1/3 rounded-full flex h-auto flex-col">
           <input id={user.id} onClick={handleEditUser} className="hidden" />
           <label
             htmlFor={user.id}
@@ -28,7 +28,7 @@ const UserItem = ({ user, onConfirm }: UserItemProps) => {
           </label>
         </div>
 
-        <div className="sm:w-2/3 h-full ml-2 my-auto flex flex-col gap-2 p-2">
+        <div className="md:w-2/3 h-full ml-2 my-auto flex flex-col gap-2 p-2">
           <p
             className="text-gray-600 text-md font-medium truncate"
             aria-label={user.email}

@@ -88,8 +88,8 @@ const Orders = () => {
 
   return (
     <>
-      <div className="container flex px-4">
-        <h1 className="font-bold text-lg">Pedidos</h1>
+      <div className="flex flex-col md:flex-row container px-4 mx-auto">
+        <h1 className="text-center md:text-left font-bold text-lg">Pedidos</h1>
       </div>
 
       <div className="flex w-full flex-wrap">

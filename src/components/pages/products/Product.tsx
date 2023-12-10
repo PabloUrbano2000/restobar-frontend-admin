@@ -48,7 +48,7 @@ const ProductItem = ({
               className="cursor-pointer flex flex-col h-1/2 relative"
             >
               <img
-                className="h-full w-full xl:absolute"
+                className="h-full max-h-60 w-fit m-auto xl:m-0 xl:max-h-none xl:w-full xl:absolute"
                 src={image ? image : NoImage}
                 alt={name}
               />
