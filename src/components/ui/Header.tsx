@@ -1,18 +1,11 @@
 import { useAuthContext } from "../../context/AuthContext";
-import { enviroments } from "../../env";
-import { getCookie } from "../../utils/cookies";
-import { COOKIE_TOKEN } from "../../utils/constants";
+import { logout } from "../../services";
 
 const Header = () => {
   const { user, cleanAuth } = useAuthContext();
 
-  const logout = () => {
-    fetch(`${enviroments.API_URL}/admin/auth/logout`, {
-      method: "POST",
-      headers: {
-        "x-access-token": getCookie(COOKIE_TOKEN) || "",
-      },
-    });
+  const closeSession = () => {
+    logout();
     cleanAuth();
   };
 
@@ -43,7 +36,7 @@ const Header = () => {
             // style={{
             //   background: "cornflowerblue",
             // }}
-            onClick={logout}
+            onClick={closeSession}
           >
             Cerrar Sesión
           </button>

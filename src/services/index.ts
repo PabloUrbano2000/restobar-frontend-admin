@@ -13,6 +13,16 @@ import {
 import { COOKIE_TOKEN } from "../utils/constants";
 import { getCookie } from "../utils/cookies";
 
+export const logout = async (): Promise<DocumentResponse<SystemUser>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/auth/logout`, {
+    method: "POST",
+    headers: {
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+    },
+  });
+  return await result.json();
+};
+
 export const loginSystemUser = async ({
   email,
   password,
