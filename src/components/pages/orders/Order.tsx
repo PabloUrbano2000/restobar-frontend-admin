@@ -22,7 +22,7 @@ const OrderItem = ({
     <div className="sm:w-1/2 lg:w-1/3 px-2 mb-4">
       <div className="p-3 shadow-md bg-white relative">
         <Link
-          to={`/ordenes/${order.id}`}
+          to={`/pedidos/${order.id}`}
           replace
           className="absolute ml-2 p-1 rounded-md text-white text-xs font-semibold bg-orange-400 right-2 top-2"
         >

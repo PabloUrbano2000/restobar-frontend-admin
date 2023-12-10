@@ -19,12 +19,12 @@ const DetailOrder = () => {
           const { order: ord } = data?.data || {};
           setOrder(ord || null);
         } else {
-          navigate("/ordenes", { replace: true });
+          navigate("/pedidos", { replace: true });
         }
       };
       getOrder();
     } else {
-      navigate("/ordenes", { replace: true });
+      navigate("/pedidos", { replace: true });
     }
   }, []);
 
@@ -64,7 +64,7 @@ const DetailOrder = () => {
         <h1 className="font-bold text-3xl">Detalle de la Orden</h1>
 
         <Link
-          to={"/ordenes"}
+          to={"/pedidos"}
           replace
           className="ml-auto rounded bg-slate-900 py-2 px-4 text-lg text-white text-normal font-bold"
         >

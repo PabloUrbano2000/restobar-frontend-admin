@@ -27,8 +27,6 @@ import UsersPage from "../components/pages/users/Users";
 import NewUserPage from "../components/pages/users/NewUser";
 import EditUserPage from "../components/pages/users/EditUser";
 import OrdersPage from "../components/pages/orders/Orders";
-// import NewOrderPage from "../components/pages/orders/NewOrder";
-// import EditOrderPage from "../components/pages/orders/EditOrder";
 import DetailOrderPage from "../components/pages/orders/DetailOrder";
 import ReceptionsPage from "../components/pages/receptions/Receptions";
 import NewReceptionPage from "../components/pages/receptions/NewReception";
@@ -153,9 +151,8 @@ const AppRouter = () => {
               />
             }
           >
-            <Route path="/ordenes" element={<OrdersPage />} />
-            {/* <Route path="/ordenes/nuevo" element={<NewOrderPage />} /> */}
-            <Route path="/ordenes/:id" element={<DetailOrderPage />} />
+            <Route path="/pedidos" element={<OrdersPage />} />
+            <Route path="/pedidos/:id" element={<DetailOrderPage />} />
           </Route>
         </Route>
 
