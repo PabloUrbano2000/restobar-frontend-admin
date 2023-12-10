@@ -91,9 +91,9 @@ const Orders = () => {
       </div>
 
       <div className="flex w-full flex-wrap">
-        {!isLoading && <Spinner />}
+        {isLoading && <Spinner />}
         {error ? <p>{error}</p> : null}
-        {isLoading && orders.length > 0
+        {!isLoading && orders.length > 0
           ? orders.map((ord: Order) => (
               <OrderItem
                 key={ord.id}

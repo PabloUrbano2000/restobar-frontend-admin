@@ -42,6 +42,8 @@ const Menu = () => {
         }
       } catch (error) {
         setError("Ocurrió un error desconocido");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -130,9 +132,9 @@ const Menu = () => {
       </div>
 
       <div className="flex w-full flex-wrap">
-        {!isLoading && <Spinner />}
+        {isLoading && <Spinner />}
         {error ? <p>{error}</p> : null}
-        {isLoading && products.length > 0
+        {!isLoading && products.length > 0
           ? products.map((pro: Product) => (
               <ProductItem
                 key={pro.id}

@@ -37,6 +37,8 @@ const UsersPage = () => {
         }
       } catch (error) {
         setError("Ocurrió un error desconocido");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -90,9 +92,9 @@ const UsersPage = () => {
         </Link>
       </div>
       <div className="flex w-full flex-wrap">
-        {!isLoading && <Spinner />}
+        {isLoading && <Spinner />}
         {error ? <p>{error}</p> : null}
-        {isLoading && users.length > 0
+        {!isLoading && users.length > 0
           ? users.map((user) => (
               <UserItem
                 key={user.id}
