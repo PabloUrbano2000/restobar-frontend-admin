@@ -31,6 +31,8 @@ const Orders = () => {
         }
       } catch (error) {
         setError("Ocurrió un error desconocido");
+      } finally {
+        setIsLoading(false);
       }
     };
 
