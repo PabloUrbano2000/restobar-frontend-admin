@@ -43,12 +43,12 @@ const NewUserPage = () => {
       first_name: Yup.string()
         .min(2, "El nombre debe tener entre 2 a 50 caracteres")
         .max(50, "El nombre debe tener entre 2 a 50 caracteres")
-        .required("El nombre del usuario es obligotario")
+        .required("El nombre del usuario es obligatorio")
         .matches(namesRegex, "Formato de nombre inválido"),
       last_name: Yup.string()
         .min(2, "El apellido paterno debe tener entre 2 a 50 caracteres")
         .max(50, "El apellido paterno debe tener entre 2 a 50 caracteres")
-        .required("El apellido paterno es obligotario")
+        .required("El apellido paterno es obligatorio")
         .matches(namesRegex, "Formato de apellido paterno inválido"),
       email: Yup.string()
         .required("El correo electrónico es obligatorio")

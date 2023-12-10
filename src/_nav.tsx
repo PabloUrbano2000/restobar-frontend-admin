@@ -29,7 +29,7 @@ const NavRoutes = (): (NavRouter | undefined)[] => {
   const routes: (NavRouter | undefined)[] = [
     {
       name: "Escritorio",
-      to: "/home",
+      to: "/",
     },
     permissions.includes(PERMISSION.SYSTEM_USERS)
       ? {
@@ -58,10 +58,10 @@ const NavRoutes = (): (NavRouter | undefined)[] => {
         }
       : undefined,
 
-    {
-      name: "Ayuda",
-      to: "/ayuda",
-    },
+    // {
+    //   name: "Ayuda",
+    //   to: "/ayuda",
+    // },
   ];
 
   let cleanRoutes = routes.filter((route) => route !== undefined);

@@ -2,7 +2,14 @@
 
 import { enviroments } from "../env";
 import { DocumentResponse, PaginateResponse } from "../interfaces";
-import { Category, Order, Product, Role, SystemUser } from "../types";
+import {
+  Category,
+  Order,
+  Product,
+  Reception,
+  Role,
+  SystemUser,
+} from "../types";
 import { COOKIE_TOKEN } from "../utils/constants";
 import { getCookie } from "../utils/cookies";
 
@@ -277,7 +284,7 @@ export const createProduct = async (
   data: Product & {
     category: string;
   }
-): Promise<DocumentResponse<Category>> => {
+): Promise<DocumentResponse<Product>> => {
   const result = await fetch(`${enviroments.API_URL}/admin/product/create`, {
     method: "POST",
     headers: {
@@ -298,7 +305,7 @@ export const updateProductById = async (
   data: Product & {
     category: string;
   }
-): Promise<DocumentResponse<SystemUser>> => {
+): Promise<DocumentResponse<Product>> => {
   const result = await fetch(`${enviroments.API_URL}/admin/product/update`, {
     method: "PUT",
     headers: {
@@ -478,5 +485,139 @@ export const terminateOrder = async (
       id,
     }),
   });
+  return await result.json();
+};
+
+export const getReceptions = async (): Promise<PaginateResponse<Reception>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/reception/list`, {
+    method: "POST",
+    headers: {
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      "Content-type": "application/json",
+    },
+  });
+  return await result.json();
+};
+
+export const getReceptionById = async (
+  id: string
+): Promise<DocumentResponse<Reception>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/reception/get`, {
+    method: "POST",
+    headers: {
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({ id }),
+  });
+  return await result.json();
+};
+
+export const createReception = async (
+  data: Reception
+): Promise<DocumentResponse<Reception>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/reception/create`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+    },
+    body: JSON.stringify({
+      code: data?.code?.trim(),
+      number_table: data?.number_table?.trim(),
+      status: data?.status,
+      available: data?.available,
+    }),
+  });
+  return await result.json();
+};
+
+export const updateReceptionById = async (
+  data: Reception
+): Promise<DocumentResponse<Reception>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/reception/update`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+    },
+    body: JSON.stringify({
+      id: data?.id,
+      code: data?.code?.trim(),
+      number_table: data?.number_table?.trim(),
+      status: data?.status,
+      available: data?.available,
+    }),
+  });
+  return await result.json();
+};
+
+export const enableReception = async (
+  id: string
+): Promise<DocumentResponse<Reception>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/reception/enable`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+    },
+    body: JSON.stringify({
+      id,
+    }),
+  });
+  return await result.json();
+};
+
+export const disableReception = async (
+  id: string
+): Promise<DocumentResponse<Reception>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/reception/disable`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+    },
+    body: JSON.stringify({
+      id,
+    }),
+  });
+  return await result.json();
+};
+
+export const availableReception = async (
+  id: string
+): Promise<DocumentResponse<Reception>> => {
+  const result = await fetch(
+    `${enviroments.API_URL}/admin/reception/available`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      },
+      body: JSON.stringify({
+        id,
+      }),
+    }
+  );
+  return await result.json();
+};
+
+export const unavailableReception = async (
+  id: string
+): Promise<DocumentResponse<Reception>> => {
+  const result = await fetch(
+    `${enviroments.API_URL}/admin/reception/unavailable`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      },
+      body: JSON.stringify({
+        id,
+      }),
+    }
+  );
   return await result.json();
 };

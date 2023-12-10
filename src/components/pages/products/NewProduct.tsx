@@ -44,12 +44,12 @@ const NewProduct = () => {
       name: Yup.string()
         .min(3, "El nombre debe tener entre 3 a 50 caracteres")
         .max(50, "El nombredebe tener entre 3 a 50 caracteres")
-        .required("El nombre del producto es obligotario")
-        .matches(productExtendRegex, "Formato de name inválido"),
+        .required("El nombre del producto es obligatorio")
+        .matches(productExtendRegex, "Formato de nombre inválido"),
       price: Yup.number()
         .min(1, "El precio debe entre 1 a 1000")
         .max(1000, "El precio debe entre 1 a 1000")
-        .required("El precio del producto es obligotario"),
+        .required("El precio del producto es obligatorio"),
       category: Yup.string().required(
         "La categoría del producto es obligatoria"
       ),

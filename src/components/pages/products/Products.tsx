@@ -16,7 +16,7 @@ import {
 import AlertModal from "../../ui/AlertModal";
 import { showFailToast, showSuccessToast } from "../../../utils/toast";
 
-const Menu = () => {
+const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -191,4 +191,4 @@ const Menu = () => {
   );
 };
 
-export default Menu;
+export default ProductsPage;

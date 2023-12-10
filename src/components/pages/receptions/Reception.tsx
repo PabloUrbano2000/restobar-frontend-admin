@@ -1,16 +1,16 @@
 import { useRef } from "react";
-import { Product } from "../../../types";
-import NoImage from "../../../assets/no-image.png";
+import { Reception } from "../../../types";
 import { useNavigate } from "react-router";
+import { formatDatetoYYYYMMDD } from "../../../utils/formats";
 
 interface ProductItemProps {
-  product: Product;
-  onConfirmState: (product: Product) => void;
-  onConfirmAvaibility: (product: Product) => void;
+  reception: Reception;
+  onConfirmState: (reception: Reception) => void;
+  onConfirmAvaibility: (reception: Reception) => void;
 }
 
 const ProductItem = ({
-  product,
+  reception,
   onConfirmState,
   onConfirmAvaibility,
 }: ProductItemProps) => {
@@ -20,39 +20,31 @@ const ProductItem = ({
 
   const {
     id,
-    name,
-    category,
+    code,
+    number_table,
     status,
-    image,
     available = 0,
-    price,
-    description = "",
-  } = product;
+    created_date,
+  } = reception;
 
-  const handleEditProduct = () => {
-    navigate(`/productos/editar/${id}`, { replace: true });
+  const handleEditReception = () => {
+    navigate(`/recepciones/editar/${id}`, { replace: true });
   };
   return (
     <div className="w-full xl:w-1/2 px-4 mb-4">
       <div className="p-5 shadow-md bg-white">
         <div className="lg:flex">
           <div className="mb-2 xl:mb-0 lg:w-5/12 xl:w-3/12 flex flex-col m-0">
-            <input
-              id={id}
-              type="button"
-              className="hidden"
-              onClick={handleEditProduct}
-            />
-            <label
-              htmlFor={product.id}
-              className="cursor-pointer flex flex-col h-1/2 relative"
-            >
-              <img
-                className="h-full max-h-60 w-fit m-auto xl:m-0 xl:max-h-none xl:w-full xl:absolute"
-                src={image ? image : NoImage}
-                alt={name}
-              />
-            </label>
+            <div className="md:w-1/3 rounded-full flex h-auto flex-col">
+              <input id={id} onClick={handleEditReception} className="hidden" />
+              <label
+                htmlFor={id}
+                className="bg-slate-500 text-center w-24 h-24 flex justify-center items-center text-white font-semibold text-xl cursor-pointer p-6 rounded-full m-auto"
+              >
+                {number_table?.toUpperCase() || ""}
+              </label>
+            </div>
+
             <div className="sm:flex h-1/2 sm:flex-col justify-center">
               <label className="block mt-5 sm:w-auto">
                 <span className="block text-gray-800 mb-2">
@@ -66,7 +58,7 @@ const ProductItem = ({
                   }`}
                   value={available?.toString()}
                   ref={availableRef}
-                  onChange={() => onConfirmAvaibility(product)}
+                  onChange={() => onConfirmAvaibility(reception)}
                   disabled={status === 0}
                 >
                   <option value="1">Disponible</option>
@@ -77,24 +69,19 @@ const ProductItem = ({
           </div>
           <div className="xl:pl-5 lg:w-7/12 xl:w-9/12">
             <p className="font-bold text-2xl text-yellow-600 mb-4 uppercase break-words truncate">
-              {name}
+              {code}
             </p>
             <p className="text-gray-600 mb-4">
-              Categoría:{" "}
-              <span className="text-gray-700 font-bold">{category?.name}</span>
+              Nro. de mesa:{" "}
+              <span className="text-gray-700 font-bold">{number_table}</span>
             </p>
-            <p
-              className="text-gray-600 mb-4 break-words text-sm truncate"
-              aria-label={description}
-            >
-              {description.length > 100
-                ? `${description.substring(0, 97)}...`
-                : description}
-            </p>
+
             <p className="text-gray-600 mb-4">
-              Precio:{" "}
+              Fecha de creación:{" "}
               <span className="text-gray-700 font-bold">
-                S/. {price?.toFixed(2)}
+                {created_date
+                  ? formatDatetoYYYYMMDD(new Date(created_date), "-")
+                  : null}
               </span>
             </p>
             <div className="w-auto text-gray-900 text-xs">
@@ -103,7 +90,7 @@ const ProductItem = ({
                 className={`ml-2 p-1 rounded-md text-white text-xs font-semibold ${
                   status === 1 ? "bg-green-500" : "bg-red-500"
                 }`}
-                onClick={() => onConfirmState(product)}
+                onClick={() => onConfirmState(reception)}
               >
                 {status === 1 ? "Habilitado" : "Inhabilitado"}
               </button>

@@ -20,7 +20,7 @@ import ErrorPage404 from "../components/pages/auth/404";
 import { LAST_PATH } from "../utils/constants";
 import HomePage from "../components/pages/Home";
 import ProductsPage from "../components/pages/products/Products";
-import HelpPage from "../components/pages/Help";
+// import HelpPage from "../components/pages/Help";
 import NewProductPage from "../components/pages/products/NewProduct";
 import EditProductPage from "../components/pages/products/EditProduct";
 import UsersPage from "../components/pages/users/Users";
@@ -82,8 +82,8 @@ const AppRouter = () => {
       <Routes>
         <Route element={<RequireAuth isAllowed={!!user} />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/ayuda" element={<HelpPage />} />
+          {/* <Route path="/home" element={<HomePage />} /> */}
+          {/* <Route path="/ayuda" element={<HelpPage />} /> */}
         </Route>
 
         <Route element={<FirebaseContainer />}>

@@ -1,6 +1,15 @@
-export type Status = 0 | 1;
-export type Verified = 0 | 1;
-export type Available = 0 | 1;
+export enum Status {
+  DISABLE = 0,
+  ENABLE = 1,
+}
+export enum Verified {
+  VERIFIED = 0,
+  UNVERIFIED = 1,
+}
+export enum Available {
+  AVAILABLE = 0,
+  UNAVAILABLE = 1,
+}
 
 export type Category = {
   id?: string;
