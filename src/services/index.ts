@@ -434,7 +434,6 @@ export const getOrders = async (): Promise<PaginateResponse<Order>> => {
     },
     body: JSON.stringify({
       limit: 100,
-      start_date: "2023-10-10",
     }),
   });
   return await result.json();

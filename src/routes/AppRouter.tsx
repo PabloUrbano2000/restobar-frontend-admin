@@ -82,8 +82,6 @@ const AppRouter = () => {
       <Routes>
         <Route element={<RequireAuth isAllowed={!!user} />}>
           <Route path="/" element={<HomePage />} />
-          {/* <Route path="/home" element={<HomePage />} /> */}
-          {/* <Route path="/ayuda" element={<HelpPage />} /> */}
         </Route>
 
         <Route element={<FirebaseContainer />}>
