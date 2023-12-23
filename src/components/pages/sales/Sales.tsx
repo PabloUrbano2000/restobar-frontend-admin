@@ -112,7 +112,7 @@ const Sales = () => {
             })
           }
         ></input>
-        <button onSubmit={filterSales}>Filtrar</button>
+        <button onClick={filterSales}>Filtrar</button>
       </div>
       <div className="flex w-full flex-wrap">
         {isLoading && <Spinner />}

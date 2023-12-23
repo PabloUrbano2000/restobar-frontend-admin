@@ -469,8 +469,8 @@ export const getSales = async ({
     },
     body: JSON.stringify({
       limit,
-      startDate,
-      endDate,
+      start_date: startDate,
+      end_date: endDate,
       status: 3,
     }),
   });
