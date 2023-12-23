@@ -20,12 +20,13 @@ import ErrorPage404 from "../components/pages/auth/404";
 import { LAST_PATH } from "../utils/constants";
 import HomePage from "../components/pages/Home";
 import ProductsPage from "../components/pages/products/Products";
-// import HelpPage from "../components/pages/Help";
 import NewProductPage from "../components/pages/products/NewProduct";
 import EditProductPage from "../components/pages/products/EditProduct";
 import UsersPage from "../components/pages/users/Users";
 import NewUserPage from "../components/pages/users/NewUser";
 import EditUserPage from "../components/pages/users/EditUser";
+import ClientsPage from "../components/pages/clients/Clients";
+import DetailClientPage from "../components/pages/clients/DetailClient";
 import OrdersPage from "../components/pages/orders/Orders";
 import DetailOrderPage from "../components/pages/orders/DetailOrder";
 import SalesPage from "../components/pages/sales/Sales";
@@ -146,6 +147,20 @@ const AppRouter = () => {
               <RequireAuth
                 isAllowed={
                   !!user &&
+                  !!user.role?.permissions?.some((per) => per.name === "USERS")
+                }
+              />
+            }
+          >
+            <Route path="/clientes" element={<ClientsPage />} />
+            <Route path="/clientes/:id" element={<DetailClientPage />} />
+          </Route>
+
+          <Route
+            element={
+              <RequireAuth
+                isAllowed={
+                  !!user &&
                   !!user.role?.permissions?.some((per) => per.name === "ORDERS")
                 }
               />
@@ -153,8 +168,6 @@ const AppRouter = () => {
           >
             <Route path="/pedidos" element={<OrdersPage />} />
             <Route path="/pedidos/:id" element={<DetailOrderPage />} />
-            <Route path="/ventas" element={<SalesPage />} />
-            <Route path="/ventas/:id" element={<DetailSalePage />} />
           </Route>
           <Route
             element={

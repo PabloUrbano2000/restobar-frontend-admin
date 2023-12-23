@@ -1,72 +1,64 @@
 import { useEffect, useState } from "react";
 
 import { useNavigate, useParams } from "react-router";
-import { Order } from "../../../types";
-import { getOrderById } from "../../../services";
+import { User } from "../../../types";
+import { getClientById } from "../../../services";
 import { Link } from "react-router-dom";
 import { formatDatetoYYYYMMDDHHmmSS } from "../../../utils/formats";
 
 const DetailSale = () => {
   const navigate = useNavigate();
   const params = useParams();
-  const [order, setOrder] = useState<Order | null>(null);
+  const [client, setClient] = useState<User | null>(null);
 
   useEffect(() => {
     if (params.id) {
-      const getOrder = async () => {
-        const data = await getOrderById(params?.id || "");
+      const getClient = async () => {
+        const data = await getClientById(params?.id || "");
         if (data.status_code == 200) {
-          const { order: ord } = data?.data || {};
-          setOrder(ord || null);
+          const { user: use } = data?.data || {};
+          setClient(use || null);
         } else {
-          navigate("/ventas", { replace: true });
+          navigate("/clientes", { replace: true });
         }
       };
-      getOrder();
+      getClient();
     } else {
-      navigate("/ventas", { replace: true });
+      navigate("/clientes", { replace: true });
     }
   }, []);
 
-  let client = "";
-  if (order?.client.first_name && order.client.last_name) {
-    client = `${order?.client.first_name} ${order?.client.last_name}`;
-  }
-
-  let reception = "";
-  if (order?.reception.number_table) {
-    reception = order.reception.number_table;
-  }
-
   let currentStatus = "";
-  if (order?.status === 1) {
-    currentStatus = "PENDIENTE DE TOMAR";
-  } else if (order?.status === 2) {
-    currentStatus = "EN PROCESO";
-  } else if (order?.status === 3) {
-    currentStatus = "TERMINADA";
+  if (client?.status === 1) {
+    currentStatus = "HABILITADO";
+  } else if (client?.status === 0) {
+    currentStatus = "INHABILITADO";
+  }
+  let createdDate = "";
+  if (client?.created_date) {
+    createdDate = formatDatetoYYYYMMDDHHmmSS(new Date(client.created_date));
   }
 
-  let receptionDate = "";
-
-  if (order?.reception_date) {
-    receptionDate = formatDatetoYYYYMMDDHHmmSS(new Date(order.reception_date));
+  let updatedDate = "";
+  if (client?.updated_date) {
+    updatedDate = formatDatetoYYYYMMDDHHmmSS(new Date(client.updated_date));
   }
 
-  let endDate = "";
-  if (order?.end_date) {
-    endDate = formatDatetoYYYYMMDDHHmmSS(new Date(order.end_date));
+  let lastLogin = "";
+
+  if (client?.last_login) {
+    lastLogin = formatDatetoYYYYMMDDHHmmSS(new Date(client.last_login));
   }
 
   return (
-    <>
+    <div>
       <div className="flex flex-col md:flex-row container px-4 gap-y-2 mx-auto">
         <h1 className="text-center md:text-left font-bold text-3xl">
-          Detalle de la Orden
+          Perfil del cliente
         </h1>
 
         <Link
-          to={"/ventas"}
+          to={"/clientes"}
           replace
           className="w-full md:w-auto text-center ml-auto rounded bg-slate-900 py-2 px-4 text-lg text-white text-normal font-bold"
         >
@@ -79,47 +71,94 @@ const DetailSale = () => {
             <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="order_number"
+                htmlFor="first_name"
               >
-                Número de orden
+                Nombre(s)
               </label>
               <input
-                id="order_number"
+                id="first_name"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                placeholder="Nro. de orden"
-                defaultValue={order?.order_number}
+                placeholder="Nombre(s)"
+                defaultValue={client?.first_name}
               />
             </div>
             <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="client"
+                htmlFor="last_name"
               >
-                Cliente
+                Apellido paterno
               </label>
               <input
-                id="client"
+                id="last_name"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                placeholder="Nombre del cliente"
-                defaultValue={client}
+                placeholder="Apellido paterno"
+                defaultValue={client?.last_name}
               />
             </div>
+            <div className="w-full">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="second_last_name"
+              >
+                Apellido materno
+              </label>
+              <input
+                id="second_last_name"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                placeholder="Apellido materno"
+                defaultValue={client?.second_last_name}
+              />
+            </div>
+          </div>
 
+          <div className="flex-col lg:flex-row lg:columns-2 gap-4 xl:columns-3 flex mb-4">
             <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="reception"
+                htmlFor="document_type"
               >
-                Nro. de mesa
+                Tipo de documento
               </label>
               <input
-                id="client"
+                id="document_type"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                placeholder="Nro. de mesa"
-                defaultValue={reception}
+                placeholder="Tipo de documento"
+                defaultValue={client?.document_type?.name || ""}
+              />
+            </div>
+            <div className="w-full">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="document_number"
+              >
+                Nro. de documento
+              </label>
+              <input
+                id="document_number"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                placeholder="Nro. de documento"
+                defaultValue={client?.document_number || ""}
+              />
+            </div>
+            <div className="w-full">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="gender"
+              >
+                Género
+              </label>
+              <input
+                id="gender"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                placeholder="Género"
+                defaultValue={client?.gender?.name || ""}
               />
             </div>
           </div>
@@ -128,31 +167,16 @@ const DetailSale = () => {
             <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="payment_method"
+                htmlFor="address"
               >
-                Método de pago
+                Dirección de residencia
               </label>
               <input
-                id="payment_method"
+                id="address"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                placeholder="Método de pago"
-                defaultValue={order?.payment_method || ""}
-              />
-            </div>
-            <div className="w-full">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="order_channel"
-              >
-                Canal de solicitud
-              </label>
-              <input
-                id="order_channel"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                placeholder="Método de pago"
-                defaultValue={order?.order_channel || ""}
+                placeholder="Dirección de residencia"
+                defaultValue={client?.address || ""}
               />
             </div>
             <div className="w-full">
@@ -176,112 +200,53 @@ const DetailSale = () => {
             <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="reception_date"
+                htmlFor="created_date"
               >
-                Fecha/Hora de recepción
+                Fecha/Hora de registro
               </label>
               <input
-                id="reception_date"
+                id="created_date"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                placeholder="Fecha de recepción"
-                defaultValue={receptionDate}
+                placeholder="Fecha de creación"
+                defaultValue={createdDate}
               />
             </div>
             <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="end_date"
+                htmlFor="updated_date"
               >
-                Fecha/Hora de entrega
+                Última actualización
               </label>
               <input
-                id="end_date"
+                id="updated_date"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                placeholder="Fecha de entrega"
-                defaultValue={endDate}
+                placeholder="Última actualización"
+                defaultValue={updatedDate}
               />
             </div>
-          </div>
 
-          <div className="flex-col lg:flex-row lg:columns-2 xl:columns-3 gap-4 flex mb-4">
             <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="subtotal"
+                htmlFor="last_login"
               >
-                Subtotal
+                Último inicio de sesión
               </label>
               <input
-                id="subtotal"
+                id="last_login"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                placeholder="Subtotal"
-                defaultValue={order?.subtotal?.toFixed(2)}
+                placeholder="Última inicio de sesión"
+                defaultValue={lastLogin}
               />
-            </div>
-            <div className="w-full">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="total"
-              >
-                Total a pagar
-              </label>
-              <input
-                id="total"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                placeholder="Total"
-                defaultValue={order?.total?.toFixed(2)}
-              />
-            </div>
-          </div>
-
-          <div className="mb-4 overflow-auto">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="items"
-            >
-              Productos ordenados
-            </label>
-            <div className="overflow-auto w-full">
-              <table
-                className="table-fixed w-full overflow-auto"
-                style={{
-                  minWidth: 600,
-                }}
-              >
-                <thead>
-                  <tr>
-                    <th className="text-center">Item</th>
-                    <th className="text-center">Nombre</th>
-                    <th className="text-center">Precio de venta</th>
-                    <th className="text-center">Cantidad</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {order?.items?.map((item) => {
-                    return (
-                      <tr key={item.id}>
-                        <td className="text-center">{item.product.id}</td>
-                        <td className="text-center">{item.product.name}</td>
-                        <td className="text-center">
-                          {item.price_of_sale.toFixed(2)}
-                        </td>
-                        <td className="text-center">
-                          {item.quantity.toString()}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

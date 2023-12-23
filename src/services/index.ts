@@ -9,6 +9,7 @@ import {
   Reception,
   Role,
   SystemUser,
+  User,
 } from "../types";
 import { COOKIE_TOKEN } from "../utils/constants";
 import { getCookie } from "../utils/cookies";
@@ -448,6 +449,47 @@ export const getOrders = async (): Promise<PaginateResponse<Order>> => {
     body: JSON.stringify({
       limit: 100,
     }),
+  });
+  return await result.json();
+};
+
+export const getClients = async ({
+  limit = 100,
+  firstName,
+  lastName,
+  email,
+}: {
+  limit: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+}): Promise<PaginateResponse<User>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/user/list`, {
+    method: "POST",
+    headers: {
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({
+      limit,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+    }),
+  });
+  return await result.json();
+};
+
+export const getClientById = async (
+  id: string
+): Promise<DocumentResponse<User>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/user/get`, {
+    method: "POST",
+    headers: {
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({ id }),
   });
   return await result.json();
 };

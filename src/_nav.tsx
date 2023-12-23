@@ -52,6 +52,12 @@ const NavRoutes = (): (NavRouter | undefined)[] => {
           to: "/productos",
         }
       : undefined,
+    permissions.includes(PERMISSION.USERS)
+      ? {
+          name: "Clientes",
+          to: "/clientes",
+        }
+      : undefined,
     permissions.includes(PERMISSION.ORDERS)
       ? {
           name: "Pedidos",

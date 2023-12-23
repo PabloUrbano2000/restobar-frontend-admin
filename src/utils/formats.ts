@@ -269,7 +269,7 @@ export const setFormatDate = ({
 
 const formatDatetoYYYYMMDDHHmmSS = (date: Date, separator = "/") => {
   const year = date.getUTCFullYear();
-  let month = date.getUTCDate();
+  let month = date.getUTCMonth();
   let day = date.getUTCDate();
 
   let hours = date.getUTCHours();
@@ -288,9 +288,9 @@ const formatDatetoYYYYMMDDHHmmSS = (date: Date, separator = "/") => {
 
 const formatDatetoYYYYMMDD = (date: Date, separator = "/") => {
   const year = date.getUTCFullYear();
-  let month = date.getUTCDate();
+  let month = date.getUTCMonth();
   let day = date.getUTCDate();
-  
+
   month++;
   const monthString = month < 10 ? `0${month}` : `${month}`;
   const dayString = day < 10 ? `0${day}` : `${day}`;
@@ -298,4 +298,10 @@ const formatDatetoYYYYMMDD = (date: Date, separator = "/") => {
   return `${year}${separator}${monthString}${separator}${dayString}`;
 };
 
-export { formatDatetoYYYYMMDDHHmmSS, formatDatetoYYYYMMDD };
+const replaceAll = (date: string, of: string, to: string) => {
+  const chars = date.split("");
+  const newChar = chars.map((c) => (c === of ? to : c));
+  return newChar.join("");
+};
+
+export { formatDatetoYYYYMMDDHHmmSS, formatDatetoYYYYMMDD, replaceAll };
