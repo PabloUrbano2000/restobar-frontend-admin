@@ -71,9 +71,7 @@ const Clients = () => {
   return (
     <>
       <div className="flex flex-col md:flex-row container px-4 mx-auto">
-        <h1 className="text-center md:text-left font-bold text-lg">
-          Ventas realizadas
-        </h1>
+        <h1 className="text-center md:text-left font-bold text-lg">Clientes</h1>
       </div>
       <div className="flex w-full xl:w-4/6 my-2 container px-4 mx-auto gap-2">
         <input
