@@ -268,9 +268,9 @@ export const setFormatDate = ({
 // };
 
 const formatDatetoYYYYMMDDHHmmSS = (date: Date, separator = "/") => {
-  const year = date.getFullYear();
-  let month = date.getMonth();
-  let day = date.getDate();
+  const year = date.getUTCFullYear();
+  let month = date.getUTCDate();
+  let day = date.getUTCDate();
 
   let hours = date.getUTCHours();
   let minutes = date.getUTCMinutes();
@@ -287,10 +287,10 @@ const formatDatetoYYYYMMDDHHmmSS = (date: Date, separator = "/") => {
 };
 
 const formatDatetoYYYYMMDD = (date: Date, separator = "/") => {
-  const year = date.getFullYear();
-  let month = date.getMonth();
-  let day = date.getDate();
-
+  const year = date.getUTCFullYear();
+  let month = date.getUTCDate();
+  let day = date.getUTCDate();
+  
   month++;
   const monthString = month < 10 ? `0${month}` : `${month}`;
   const dayString = day < 10 ? `0${day}` : `${day}`;

@@ -11,7 +11,7 @@ import {
   getRoles,
   getSystemUserById,
 } from "../../../services";
-import { showFailToast } from "../../../utils/toast";
+import { showFailToast, showSuccessToast } from "../../../utils/toast";
 
 const EditUserPage = () => {
   // Hook para redireccionar
@@ -54,7 +54,7 @@ const EditUserPage = () => {
         });
 
         if (data.status_code == 200) {
-          showFailToast(data.message || "Usuario actualizado éxitosamente");
+          showSuccessToast(data.message || "Usuario actualizado éxitosamente");
           navigate("/usuarios", {
             replace: true,
           });

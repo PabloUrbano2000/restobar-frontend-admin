@@ -272,6 +272,9 @@ export const getProducts = async (): Promise<PaginateResponse<Product>> => {
       "x-access-token": getCookie(COOKIE_TOKEN) || "",
       "Content-type": "application/json",
     },
+    body: JSON.stringify({
+      limit: 250,
+    }),
   });
   return await result.json();
 };
