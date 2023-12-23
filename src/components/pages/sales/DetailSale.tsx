@@ -19,12 +19,12 @@ const DetailSale = () => {
           const { order: ord } = data?.data || {};
           setOrder(ord || null);
         } else {
-          navigate("/pedidos", { replace: true });
+          navigate("/ventas", { replace: true });
         }
       };
       getOrder();
     } else {
-      navigate("/pedidos", { replace: true });
+      navigate("/ventas", { replace: true });
     }
   }, []);
 

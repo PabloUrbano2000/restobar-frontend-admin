@@ -452,6 +452,31 @@ export const getOrders = async (): Promise<PaginateResponse<Order>> => {
   return await result.json();
 };
 
+export const getSales = async ({
+  limit = 100,
+  startDate,
+  endDate,
+}: {
+  limit: number;
+  startDate: string;
+  endDate: string;
+}): Promise<PaginateResponse<Order>> => {
+  const result = await fetch(`${enviroments.API_URL}/admin/order/list`, {
+    method: "POST",
+    headers: {
+      "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({
+      limit,
+      startDate,
+      endDate,
+      status: 3,
+    }),
+  });
+  return await result.json();
+};
+
 export const getOrderById = async (
   id: string
 ): Promise<DocumentResponse<Order>> => {

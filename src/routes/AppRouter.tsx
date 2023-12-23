@@ -28,6 +28,8 @@ import NewUserPage from "../components/pages/users/NewUser";
 import EditUserPage from "../components/pages/users/EditUser";
 import OrdersPage from "../components/pages/orders/Orders";
 import DetailOrderPage from "../components/pages/orders/DetailOrder";
+import SalesPage from "../components/pages/sales/Sales";
+import DetailSalePage from "../components/pages/sales/DetailSale";
 import ReceptionsPage from "../components/pages/receptions/Receptions";
 import NewReceptionPage from "../components/pages/receptions/NewReception";
 import EditReceptionPage from "../components/pages/receptions/EditReception";
@@ -151,6 +153,21 @@ const AppRouter = () => {
           >
             <Route path="/pedidos" element={<OrdersPage />} />
             <Route path="/pedidos/:id" element={<DetailOrderPage />} />
+            <Route path="/ventas" element={<SalesPage />} />
+            <Route path="/ventas/:id" element={<DetailSalePage />} />
+          </Route>
+          <Route
+            element={
+              <RequireAuth
+                isAllowed={
+                  !!user &&
+                  !!user.role?.permissions?.some((per) => per.name === "SALES")
+                }
+              />
+            }
+          >
+            <Route path="/ventas" element={<SalesPage />} />
+            <Route path="/ventas/:id" element={<DetailSalePage />} />
           </Route>
         </Route>
 

@@ -5,6 +5,7 @@ enum PERMISSION {
   HOME = "HOME",
   PRODUCTS = "PRODUCTS",
   ORDERS = "ORDERS",
+  SALES = "SALES",
   USERS = "USERS",
   RECEPTIONS = "RECEPTIONS",
   SYSTEM_USERS = "SYSTEM_USERS",
@@ -55,6 +56,12 @@ const NavRoutes = (): (NavRouter | undefined)[] => {
       ? {
           name: "Pedidos",
           to: "/pedidos",
+        }
+      : undefined,
+    permissions.includes(PERMISSION.SALES)
+      ? {
+          name: "Ventas",
+          to: "/ventas",
         }
       : undefined,
 
