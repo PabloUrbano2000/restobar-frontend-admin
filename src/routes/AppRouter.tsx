@@ -70,7 +70,7 @@ const AppRouter = () => {
   React.useEffect(() => {
     if (status === authStatus.Ready) {
       if (!user) {
-        if (!location.href.includes("/auth/")) {
+        if (!window.location.href.includes("/auth/")) {
           navigate("/auth/login", { replace: true });
         }
       } else {
@@ -83,11 +83,11 @@ const AppRouter = () => {
   return (
     <>
       <Routes>
-        <Route element={<RequireAuth isAllowed={!!user} />}>
-          <Route path="/" element={<HomePage />} />
-        </Route>
-
         <Route element={<FirebaseContainer />}>
+          <Route element={<RequireAuth isAllowed={!!user} />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/dashboard" element={<HomePage />} />
+          </Route>
           <Route
             element={
               <RequireAuth

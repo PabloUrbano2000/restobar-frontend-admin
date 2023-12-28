@@ -136,6 +136,44 @@ export const changePassword = async ({
   return await result.json();
 };
 
+export const getReceptionsWithRequiresAttention = async (): Promise<
+  PaginateResponse<Reception>
+> => {
+  const result = await fetch(
+    `${enviroments.API_URL}/admin/dashboard/receptions`,
+    {
+      method: "POST",
+      headers: {
+        "x-access-token": getCookie(COOKIE_TOKEN) || "",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        limit: 250,
+      }),
+    }
+  );
+  return await result.json();
+};
+
+export const serveReception = async (
+  id: string
+): Promise<DocumentResponse<Reception>> => {
+  const result = await fetch(
+    `${enviroments.API_URL}/admin/dashboard/serve-reception`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": getCookie(COOKIE_TOKEN) || "",
+      },
+      body: JSON.stringify({
+        id,
+      }),
+    }
+  );
+  return await result.json();
+};
+
 export const getRoles = async (): Promise<PaginateResponse<Role>> => {
   const result = await fetch(`${enviroments.API_URL}/admin/role/list`, {
     method: "POST",
