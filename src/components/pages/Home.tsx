@@ -8,6 +8,7 @@ import {
 } from "../../services";
 import Spinner from "../ui/Spinner";
 import { showFailToast, showSuccessToast } from "../../utils/toast";
+import BarChart from "./charts/BarChart";
 
 const HomePage = () => {
   const [receptions, setReceptions] = useState<Reception[]>([]);
@@ -67,16 +68,9 @@ const HomePage = () => {
   return (
     <>
       <div className="flex flex-col container py-12 px-4 mx-auto">
-        <h1 className="text-center font-bold text-6xl mb-14">
-          Hola Usuario :{")"}
-        </h1>
-        <h2 className="text-center font-bold text-lg mb-14">
-          Esta es la página principal, por favor selecciona un módulo de la
-          parte izquierda.
-        </h2>
-        <h3 className="text-center font-semibold text-md">
-          Recuerda... ahora tu tienes el poder...
-        </h3>
+        <div className="flex flex-col my-3">
+          <BarChart />
+        </div>
         <div className="flex flex-col my-3">
           <p className="font-bold">Mesas que requieren atención:</p>
           {isLoading ? (

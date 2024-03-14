@@ -12,10 +12,12 @@
     "watch:css": "postcss src/css/tailwind.css -o src/css/main.css --watch"
   },
   "dependencies": {
+    "chart.js": "^4.4.2",
     "firebase": "^10.6.0",
     "formik": "^2.4.5",
     "postcss-cli": "^10.1.0",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-router": "^6.20.0",
