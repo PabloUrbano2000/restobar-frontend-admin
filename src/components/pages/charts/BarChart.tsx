@@ -6,9 +6,8 @@ import { formatDatetoYYYYMMDD } from "../../../utils/formats";
 import Spinner from '../../ui/Spinner';
 import { Order } from '../../../types';
 import { generateLastPath } from "../../../utils/session";
-import { string } from 'yup';
 
-defaults.maintainAspectRatio = false;
+defaults.maintainAspectRatio = true;
 defaults.responsive = true;
 
 defaults.plugins.title.display = true;
@@ -16,24 +15,27 @@ defaults.plugins.title.align = "start";
 //defaults.plugins.title.font.size = 20;
 defaults.plugins.title.color = "black";
 
+type ObjetMonth = {
+    name: string;
+    number: number;
+    amount: number;
+};
+
 const BarChart = () => {
     const [salesAmount, setSalesAmount] = useState(0);
-    const [monthsName, setMonthsName] = useState<string[]>([]);
-    const [countMonths, setCountMonths] = useState<number[]>([])
+    const [message, setMessage] = useState("");
+
+    const [objectMonth, setObjectMonth] = useState<ObjetMonth[]>([]);
+
 
     const [orders, setOrders] = useState<Order[]>([]);
     const [error, setError] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
     const [filter, setFilter] = useState({
         startDate: formatDatetoYYYYMMDD(new Date(), "-"),
-        //startDate: ("2024-02-01"),
-        //startDate: (new Date().getFullYear(), "-", new Date().getMonth(), "-", new Date().getDay()).toString(),
         endDate: formatDatetoYYYYMMDD(new Date(), "-"),
     });
 
-    useEffect(() => {
-        //filterSales();
-    }, []);
 
     useEffect(() => {
         generateLastPath();
@@ -46,15 +48,9 @@ const BarChart = () => {
                     endDate: filter.endDate,
                 });
                 if (data.status_code === 200) {
-
                     setOrders(data.docs);
                     setSalesAmount(data.count);
-                    setMonthsName(getNameMonths(filter.startDate, filter.endDate));
-
-                    // orders.forEach(date => getDates(date.reception_date.toString()))
-                    setCountMonths(getDates());
-                    //console.log(orders, '1')
-                    // console.log(countMonths, '1')
+                    setObjectMonth(getNameMonths(filter.startDate, filter.endDate))
                 } else {
                     setError(data.errors[0] || "Ocurrió un error desconocido");
                 }
@@ -75,6 +71,7 @@ const BarChart = () => {
 
     const filterSales = async () => {
         try {
+            setObjectMonth([]);
             const data = await getSales({
                 limit: 100,
                 startDate: filter.startDate,
@@ -82,13 +79,10 @@ const BarChart = () => {
             });
 
             if (data.status_code === 200) {
+
                 setOrders(data.docs);
                 setSalesAmount(data.count);
-                setMonthsName(getNameMonths(filter.startDate, filter.endDate));
-
-                // orders.forEach(date => getDates(date.reception_date.toString()))
-                setCountMonths(getDates());
-                // console.log(countMonths, '2')
+                setObjectMonth(getNameMonths(filter.startDate, filter.endDate))
 
             } else {
                 setError(data.errors[0] || "Ocurrió un error desconocido");
@@ -100,48 +94,66 @@ const BarChart = () => {
         }
     };
 
-    const getNameMonths = (startDate: string, endDate: string): string[] => {
-        const month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre']
-        const monthsNameFilter = []
+    const getNameMonths = (startDate: string, endDate: string): ObjetMonth[] => {
+        const month: string[] = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre']
+        const numberMonth: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-        if (parseInt(startDate.substring(5, 7)) === parseInt(endDate.substring(5, 7))) {
-            monthsNameFilter.push(month[parseInt(startDate.substring(5, 7)) - 1])
+        const monthsNameFilter: string[] = []
+        const numberMonthFilter: number[] = []
+
+        var fechaInicio = new Date(startDate).getTime();
+        var fechaFin = new Date(endDate).getTime();
+
+        var diff = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24);
+
+        if (diff >= 336) {
+            setMessage('Solo se puede establecer un rango máximo de 12 meses')
         } else {
-            if (parseInt(startDate.substring(5, 7)) >= parseInt(endDate.substring(5, 7))) {
-                for (let index = parseInt(startDate.substring(5, 7)); index <= 12; index++) {
-                    monthsNameFilter.push(month[index - 1])
-                }
-                for (let index = 1; index <= parseInt(endDate.substring(5, 7)); index++) {
-                    monthsNameFilter.push(month[index - 1])
-                }
+            if (parseInt(startDate.substring(5, 7)) === parseInt(endDate.substring(5, 7))) {
+                monthsNameFilter.push(month[parseInt(startDate.substring(5, 7)) - 1])
+                numberMonthFilter.push(numberMonth[parseInt(startDate.substring(5, 7)) - 1])
+
             } else {
-                for (let index = parseInt(startDate.substring(5, 7)); index <= parseInt(endDate.substring(5, 7)); index++) {
-                    monthsNameFilter.push(month[index - 1])
+                if (parseInt(startDate.substring(5, 7)) > parseInt(endDate.substring(5, 7))) {
+                    for (let index = parseInt(startDate.substring(5, 7)); index <= 12; index++) {
+                        monthsNameFilter.push(month[index - 1])
+                        numberMonthFilter.push(numberMonth[index - 1])
+                    }
+                    for (let index = 1; index <= parseInt(endDate.substring(5, 7)); index++) {
+                        monthsNameFilter.push(month[index - 1])
+                        numberMonthFilter.push(numberMonth[index - 1])
+                    }
+                } else {
+                    for (let index = parseInt(startDate.substring(5, 7)); index <= parseInt(endDate.substring(5, 7)); index++) {
+                        monthsNameFilter.push(month[index - 1])
+                        numberMonthFilter.push(numberMonth[index - 1])
+                    }
                 }
             }
         }
-        //console.log(monthsNameFilter)
-        return monthsNameFilter;
+        const monthsSales: number[] = [];
+        orders.forEach(date => monthsSales.push(new Date(date.reception_date).getMonth()))
+
+        const specimens = monthsSales.filter((number, i) => i == 0 ? true : monthsSales[i - 1] != number);
+        const counterSpecimens = specimens.map(spec => {
+            return { number: spec, count: 0 };
+        });
+
+        counterSpecimens.map((countSpec, i) => {
+            const actualSpecLength = monthsSales.filter(number => number === countSpec.number).length;
+            countSpec.count = actualSpecLength;
+        })
+
+        const newObject: ObjetMonth[] = [];
+        monthsNameFilter.forEach((value: string, index: number) => {
+            newObject.push({ name: value, number: numberMonthFilter[index], amount: 0 })
+        })
+
+        newObject.map((value) => {
+            counterSpecimens.filter(number => number.number + 1 === value.number ? value.amount = number.count : 0)
+        })
+        return newObject;
     }
-
-    const getDates = (): number[] => {
-
-        const numberMonth: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-
-        const monthsSales: string[] = [];
-        orders.forEach(date => monthsSales.push(new Date(date.reception_date).getMonth().toString()))
-
-        const count: any = {}
-        monthsSales.forEach(el => (count[el] = count[el] + 1 || 1))
-
-        console.log(monthsSales)
-
-        //const result: any = Object.values(count).reverse()
-
-        return Object.values(count);
-    }
-    // console.log(monthsName, countMonths, filter, orders)
-    //console.log(numberMonths, salesAmount, orders)
     return (
         <>
             <div className="flex flex-col md:flex-row container px-4 mx-auto">
@@ -186,15 +198,15 @@ const BarChart = () => {
             <div className="flex w-full flex-wrap">
                 {isLoading && <Spinner />}
                 {error ? <p>{error}</p> : null}
-                {!isLoading && salesAmount !== 0
+                {salesAmount !== 0
                     ?
                     <Bar
                         data={{
-                            labels: monthsName,
+                            labels: objectMonth.map(value => value.name),
                             datasets: [
                                 {
                                     label: "Count",
-                                    data: countMonths,
+                                    data: objectMonth.map(value => value.amount),
                                     backgroundColor: [
                                         "rgba(43, 63, 229, 0.8)",
                                         "rgba(250, 192, 19, 0.8)",
@@ -212,7 +224,7 @@ const BarChart = () => {
                             },
                         }}
                     />
-                    : null}
+                    : message}
             </div>
         </>
 
