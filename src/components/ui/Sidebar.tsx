@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import NavRoutes from "../../_nav";
+import { useAuthContext } from "../../context/AuthContext";
 
 interface SidebarProps {
   show: boolean;
@@ -8,12 +9,33 @@ interface SidebarProps {
 }
 const Sidebar = ({ show, onShow }: SidebarProps) => {
   const routes = NavRoutes();
+  const { user } = useAuthContext();
+
+  const getColor = (rol: string | undefined) => {
+    let color = ''
+    switch (rol) {
+      case 'WAITER':
+        color = '#65E079';
+        break;
+      case 'ADMIN':
+        color = '#1C8DD9';
+        break;
+      case 'GLOBAL_ADMIN':
+        color = '#E02D12';
+        break;
+      case 'CHEF':
+        color = '#E100C2';
+        break;
+      default:
+        color = '#B7BDD6';
+    }
+    return color;
+  }
 
   return (
     <div
-      className={`${
-        show ? "w-3/4 absolute" : "w-1/6"
-      } sm:relative md:w-2/5 xl:w-1/5 bg-gray-800 h-screen z-50`}
+      className={`${show ? "w-3/4 absolute" : "w-1/6"
+        } sm:relative md:w-2/5 xl:w-1/5  h-screen z-50`} style={{ backgroundColor: getColor(user?.role?.name) }}
     >
       <div className="flex flex-col p-3">
         <button
@@ -69,9 +91,8 @@ const Sidebar = ({ show, onShow }: SidebarProps) => {
             <NavLink
               key={router?.name}
               className={({ isActive }) => {
-                return `p-1 py-2 block hover:bg-yellow-500 hover:text-gray-500 ${
-                  isActive ? "text-yellow-500" : "text-gray-400"
-                }`;
+                return `p-1 py-2 block hover:bg-yellow-500 hover:text-gray-500 ${isActive ? "text-yellow-500" : "text-gray-400"
+                  }`;
               }}
               to={router?.to || ""}
             >
