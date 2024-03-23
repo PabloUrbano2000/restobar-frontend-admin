@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Chart as ChartJS, defaults } from "chart.js/auto";
-import { Bar } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 import { getSales } from "../../../services";
 import { formatDatetoYYYYMMDD } from "../../../utils/formats";
 import Spinner from '../../ui/Spinner';
@@ -79,10 +79,10 @@ const BarChart = () => {
             });
 
             if (data.status_code === 200) {
-
                 setOrders(data.docs);
                 setSalesAmount(data.count);
                 setObjectMonth(getNameMonths(filter.startDate, filter.endDate))
+                console.log(orders)
 
             } else {
                 setError(data.errors[0] || "Ocurrió un error desconocido");
@@ -221,6 +221,50 @@ const BarChart = () => {
                                 title: {
                                     text: "Cantidad de ventas por rango de meses",
                                 },
+                            },
+                        }}
+                    />
+                    : message}
+            </div>
+            <div className="flex w-full flex-wrap">
+                {isLoading && <Spinner />}
+                {error ? <p>{error}</p> : null}
+                {salesAmount !== 0
+                    ?
+                    <Line
+                        data={{
+                            labels: objectMonth.map(value => value.name),
+                            datasets: [
+                                {
+                                    label: "Count",
+                                    data: objectMonth.map(value => value.amount),
+                                    borderColor: "rgba(43, 63, 229, 0.8)",
+                                    backgroundColor: "rgba(43, 63, 229, 0.8)",
+                                },
+                                {
+                                    label: 'Dataset 1',
+                                    data: [5, 6, 8, 9, 10],
+                                    borderColor: "rgba(250, 192, 19, 0.8)",
+                                    backgroundColor: "rgba(250, 192, 19, 0.8)",
+                                },
+                                {
+                                    label: 'Dataset 2',
+                                    data: [4, 3, 2, 6, 8],
+                                    borderColor: "rgba(253, 135, 135, 0.8)",
+                                    backgroundColor: "rgba(253, 135, 135, 0.8)",
+                                }
+                            ],
+                        }}
+                        options={{
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Chart.js Line Chart'
+                                }
                             },
                         }}
                     />
