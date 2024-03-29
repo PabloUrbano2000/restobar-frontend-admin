@@ -15,16 +15,16 @@ const Sidebar = ({ show, onShow }: SidebarProps) => {
     let color = ''
     switch (rol) {
       case 'WAITER':
-        color = '#65E079';
+        color = '#01E097';
         break;
       case 'ADMIN':
-        color = '#1C8DD9';
+        color = '#E17759';
         break;
       case 'GLOBAL_ADMIN':
-        color = '#E02D12';
+        color = '#4783DE';
         break;
       case 'CHEF':
-        color = '#E100C2';
+        color = '#DE476D';
         break;
       default:
         color = '#B7BDD6';
@@ -83,20 +83,20 @@ const Sidebar = ({ show, onShow }: SidebarProps) => {
         <p className="uppercase text-white text-2xl tracking-wide text-center font-bold">
           RestobarAdmin
         </p>
-        <p className="mt-3 text-gray-500">
+        <p className="mt-3 text-neutral-50">
           Administra tu restobar en las siguientes opciones:
         </p>
-        <nav className="mt-10">
+        <nav className="group mt-10">
           {routes.map((router) => (
             <NavLink
               key={router?.name}
               className={({ isActive }) => {
-                return `p-1 py-2 block hover:bg-yellow-500 hover:text-gray-500 ${isActive ? "text-yellow-500" : "text-gray-400"
+                return `p-1 py-2 block hover:bg-yellow-500 text-neutral-50 ${isActive ? "text-yellow-500" : "text-neutral-50"
                   }`;
               }}
               to={router?.to || ""}
             >
-              {router?.name || ""}
+              <p className="hover:text-white">{router?.name || ""}</p>
             </NavLink>
           ))}
         </nav>

@@ -3,29 +3,33 @@ import { Chart as ChartJS, defaults } from "chart.js/auto";
 import { Bar, Line } from "react-chartjs-2";
 import { getSales } from "../../../services";
 import { formatDatetoYYYYMMDD } from "../../../utils/formats";
-import Spinner from '../../ui/Spinner';
 import { Order } from '../../../types';
 import { generateLastPath } from "../../../utils/session";
 
-defaults.maintainAspectRatio = true;
-defaults.responsive = true;
+//defaults.maintainAspectRatio = true;
+//defaults.responsive = true;
 
 defaults.plugins.title.display = true;
 defaults.plugins.title.align = "start";
-//defaults.plugins.title.font.size = 20;
 defaults.plugins.title.color = "black";
 
-type ObjetMonth = {
+type ObjectMonth = {
     name: string;
     number: number;
     amount: number;
+    total: number;
+};
+
+type ObjectSales = {
+    month: number;
+    total: number;
 };
 
 const BarChart = () => {
     const [salesAmount, setSalesAmount] = useState(0);
     const [message, setMessage] = useState("");
 
-    const [objectMonth, setObjectMonth] = useState<ObjetMonth[]>([]);
+    const [objectMonth, setObjectMonth] = useState<ObjectMonth[]>([]);
 
 
     const [orders, setOrders] = useState<Order[]>([]);
@@ -82,7 +86,6 @@ const BarChart = () => {
                 setOrders(data.docs);
                 setSalesAmount(data.count);
                 setObjectMonth(getNameMonths(filter.startDate, filter.endDate))
-                console.log(orders)
 
             } else {
                 setError(data.errors[0] || "Ocurrió un error desconocido");
@@ -94,7 +97,7 @@ const BarChart = () => {
         }
     };
 
-    const getNameMonths = (startDate: string, endDate: string): ObjetMonth[] => {
+    const getNameMonths = (startDate: string, endDate: string): ObjectMonth[] => {
         const month: string[] = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre']
         const numberMonth: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
@@ -132,27 +135,41 @@ const BarChart = () => {
             }
         }
         const monthsSales: number[] = [];
+        const monthsAmount: ObjectSales[] = [];
         orders.forEach(date => monthsSales.push(new Date(date.reception_date).getMonth()))
+        orders.forEach(amount => monthsAmount.push({ month: new Date(amount.reception_date).getMonth() + 1, total: amount.total }))
 
         const specimens = monthsSales.filter((number, i) => i == 0 ? true : monthsSales[i - 1] != number);
         const counterSpecimens = specimens.map(spec => {
-            return { number: spec, count: 0 };
+            return { number: spec, count: 0, total: 0 };
         });
-
-        counterSpecimens.map((countSpec, i) => {
+        counterSpecimens.map((countSpec) => {
             const actualSpecLength = monthsSales.filter(number => number === countSpec.number).length;
             countSpec.count = actualSpecLength;
         })
-
-        const newObject: ObjetMonth[] = [];
+        const newObject: ObjectMonth[] = [];
         monthsNameFilter.forEach((value: string, index: number) => {
-            newObject.push({ name: value, number: numberMonthFilter[index], amount: 0 })
+            newObject.push({ name: value, number: numberMonthFilter[index], amount: 0, total: 0 })
+        })
+
+        newObject.forEach((value) => {
+            value.total = monthsAmount.reduce((acum, curr) => curr.month === value.number ? acum + curr.total : acum, 0)
         })
 
         newObject.map((value) => {
             counterSpecimens.filter(number => number.number + 1 === value.number ? value.amount = number.count : 0)
+
         })
         return newObject;
+    }
+
+    const generarNumero = (numero: number): string => {
+        return (Math.random() * numero).toFixed(0);
+    }
+
+    const colorRGB = () => {
+        var coolor = "(" + generarNumero(255) + "," + generarNumero(255) + "," + generarNumero(255) + ")";
+        return "rgb" + coolor;
     }
     return (
         <>
@@ -195,81 +212,77 @@ const BarChart = () => {
                     Filtrar
                 </button>
             </div>
-            <div className="flex w-full flex-wrap">
-                {isLoading && <Spinner />}
-                {error ? <p>{error}</p> : null}
-                {salesAmount !== 0
-                    ?
-                    <Bar
-                        data={{
-                            labels: objectMonth.map(value => value.name),
-                            datasets: [
-                                {
-                                    label: "Count",
-                                    data: objectMonth.map(value => value.amount),
-                                    backgroundColor: [
-                                        "rgba(43, 63, 229, 0.8)",
-                                        "rgba(250, 192, 19, 0.8)",
-                                        "rgba(253, 135, 135, 0.8)",
-                                    ],
-                                    borderRadius: 5,
+            <div className='flex'>
+                <div className="mx-auto w-full h-96">
+                    {salesAmount !== 0
+                        ?
+                        <Bar
+                            data={{
+                                labels: objectMonth.map(value => value.name),
+                                datasets: [
+                                    {
+                                        label: "Cantidad de pedidos por mes",
+                                        data: objectMonth.map(value => value.amount),
+                                        backgroundColor: [
+                                            colorRGB(),
+                                            colorRGB(),
+                                            colorRGB(),
+                                        ],
+                                        borderRadius: 5,
+                                    },
+                                ],
+                            }}
+                            options={{
+                                maintainAspectRatio: true,
+                                responsive: true,
+                                plugins: {
+                                    title: {
+                                        text: "Cantidad de pedidos por rango de meses",
+                                    },
                                 },
-                            ],
-                        }}
-                        options={{
-                            plugins: {
-                                title: {
-                                    text: "Cantidad de ventas por rango de meses",
+                            }}
+                        />
+                        : message}
+                </div>
+                <div className="mx-auto w-full h-96">
+                    {salesAmount !== 0
+                        ?
+                        <Line
+                            data={{
+                                labels: objectMonth.map(value => value.name),
+                                datasets: [
+                                    {
+                                        label: "Ingresos Totales",
+                                        data: objectMonth.map(value => value.total),
+                                        borderColor: colorRGB(),
+                                        backgroundColor: colorRGB(),
+                                    },
+                                ],
+                            }}
+                            options={{
+                                maintainAspectRatio: true,
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Ingresos por Mes'
+                                    }
                                 },
-                            },
-                        }}
-                    />
-                    : message}
-            </div>
-            <div className="flex w-full flex-wrap">
-                {isLoading && <Spinner />}
-                {error ? <p>{error}</p> : null}
-                {salesAmount !== 0
-                    ?
-                    <Line
-                        data={{
-                            labels: objectMonth.map(value => value.name),
-                            datasets: [
-                                {
-                                    label: "Count",
-                                    data: objectMonth.map(value => value.amount),
-                                    borderColor: "rgba(43, 63, 229, 0.8)",
-                                    backgroundColor: "rgba(43, 63, 229, 0.8)",
-                                },
-                                {
-                                    label: 'Dataset 1',
-                                    data: [5, 6, 8, 9, 10],
-                                    borderColor: "rgba(250, 192, 19, 0.8)",
-                                    backgroundColor: "rgba(250, 192, 19, 0.8)",
-                                },
-                                {
-                                    label: 'Dataset 2',
-                                    data: [4, 3, 2, 6, 8],
-                                    borderColor: "rgba(253, 135, 135, 0.8)",
-                                    backgroundColor: "rgba(253, 135, 135, 0.8)",
+                                layout: {
+                                    padding: {
+                                        left: 20
+                                    }
                                 }
-                            ],
-                        }}
-                        options={{
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'top',
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Chart.js Line Chart'
-                                }
-                            },
-                        }}
-                    />
-                    : message}
+                            }}
+                        />
+                        : message}
+                </div>
             </div>
+
+
         </>
 
     )
