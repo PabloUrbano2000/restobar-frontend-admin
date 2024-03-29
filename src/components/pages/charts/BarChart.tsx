@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Chart as ChartJS, defaults } from "chart.js/auto";
+import { useEffect, useState } from 'react'
+import { defaults } from "chart.js/auto";
 import { Bar, Line } from "react-chartjs-2";
 import { getSales } from "../../../services";
 import { formatDatetoYYYYMMDD } from "../../../utils/formats";
@@ -39,7 +39,7 @@ const BarChart = () => {
         startDate: formatDatetoYYYYMMDD(new Date(), "-"),
         endDate: formatDatetoYYYYMMDD(new Date(), "-"),
     });
-
+    console.log(isLoading, error)
 
     useEffect(() => {
         generateLastPath();
